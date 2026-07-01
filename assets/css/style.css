@@ -1,0 +1,124 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+.page-title {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.page-subtitle {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    min-height: 120px;
+}
+
+.stat-card h4 {
+    font-weight: 700;
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.action-buttons a {
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+canvas {
+    max-width: 100%;
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+    .navbar .container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar .container div {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .navbar .btn {
+        margin-top: 4px;
+    }
+
+    h3 {
+        font-size: 22px;
+    }
+
+    .card-body h4 {
+        font-size: 20px;
+    }
+
+    .btn {
+        font-size: 14px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .page-title {
+        font-size: 21px;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .btn {
+        width: auto;
+        margin-bottom: 4px;
+    }
+
+    .navbar-brand {
+        font-size: 18px;
+    }
+}

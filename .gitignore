@@ -1,0 +1,15 @@
+# Sistem
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# File sementara
+*.log
+*.tmp
+
+# File testing sementara
+test_connection.php
+generate_hash.php
