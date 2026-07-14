@@ -1,12 +1,7 @@
 <?php
-
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once '../config/bootstrap.php';
 
 checkRole('user');
-
-$user_id = $_SESSION['user_id'];
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -25,7 +20,11 @@ $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "ii", $id, $user_id);
 
 if (mysqli_stmt_execute($stmt)) {
-    header("Location: income.php?success=Data pemasukan berhasil dihapus");
+    if (mysqli_stmt_affected_rows($stmt) > 0) {
+        header("Location: income.php?success=Data pemasukan berhasil dihapus");
+    } else {
+        header("Location: income.php?error=Data tidak ditemukan atau bukan milik Anda");
+    }
     exit;
 } else {
     header("Location: income.php?error=Data pemasukan gagal dihapus");

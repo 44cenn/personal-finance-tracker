@@ -1,37 +1,34 @@
 <?php
-
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once '../config/bootstrap.php';
 
 checkRole('user');
 
-$query = "SELECT * FROM categories WHERE type = 'expense' ORDER BY name ASC";
-$result = mysqli_query($conn, $query);
+$query = "SELECT * FROM categories WHERE type = 'expense' AND (user_id IS NULL OR user_id = ?) ORDER BY name ASC";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="<?= htmlspecialchars($current_language) ?>">
 <head>
     <meta charset="UTF-8">
-    <title>Tambah Pengeluaran</title>
+    <title><?= __('expense') ?> - Personal Finance Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-
-<nav class="navbar navbar-dark bg-danger">
-    <div class="container">
-        <span class="navbar-brand">Personal Finance Tracker</span>
-        <a href="expense.php" class="btn btn-outline-light btn-sm">Kembali</a>
-    </div>
-</nav>
+<body data-theme="<?= htmlspecialchars($current_theme) ?>">
+<?php include __DIR__ . '/navbar.php'; ?>
 
 <div class="container mt-4">
-    <h3>Tambah Pengeluaran</h3>
+    <div class="d-flex align-items-center mb-3">
+        <a href="expense.php" class="btn btn-outline-secondary me-2 btn-back-icon" title="Kembali ke Pengeluaran">‹</a>
+        <h3>Tambah Pengeluaran</h3>
+    </div>
 
     <div class="card mt-3">
         <div class="card-body">
@@ -58,7 +55,7 @@ $result = mysqli_query($conn, $query);
 
                 <div class="mb-3">
                     <label class="form-label">Jumlah Pengeluaran</label>
-                    <input type="number" name="amount" class="form-control" required min="1" data-required="true" data-amount="true">
+                    <input type="text" name="amount" class="form-control" required data-required="true" data-amount="true" data-format="numeric" placeholder="Contoh: 150000">
                 </div>
 
                 <div class="mb-3">
@@ -72,7 +69,6 @@ $result = mysqli_query($conn, $query);
                 </div>
 
                 <button type="submit" class="btn btn-danger">Simpan</button>
-                <a href="expense.php" class="btn btn-secondary">Batal</a>
 
             </form>
 
@@ -81,6 +77,10 @@ $result = mysqli_query($conn, $query);
 </div>
 
 <script src="../assets/js/validation.js"></script>
+<script src="../assets/js/input-formatter.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -40,9 +40,9 @@ if (!$dateCheck || $dateCheck->format('Y-m-d') !== $transaction_date) {
     exit;
 }
 
-$categoryCheckQuery = "SELECT id FROM categories WHERE id = ? AND type = 'expense'";
+$categoryCheckQuery = "SELECT id FROM categories WHERE id = ? AND type = 'expense' AND (user_id IS NULL OR user_id = ?)";
 $categoryStmt = mysqli_prepare($conn, $categoryCheckQuery);
-mysqli_stmt_bind_param($categoryStmt, "i", $category_id);
+mysqli_stmt_bind_param($categoryStmt, "ii", $category_id, $user_id);
 mysqli_stmt_execute($categoryStmt);
 $categoryResult = mysqli_stmt_get_result($categoryStmt);
 

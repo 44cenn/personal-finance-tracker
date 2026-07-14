@@ -5,13 +5,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../auth/login.php?error=Silakan login terlebih dahulu");
-    exit;
-}
-
-if (!isset($_SESSION['role'])) {
-    session_unset();
-    session_destroy();
-    header("Location: ../auth/login.php?error=Session tidak valid, silakan login ulang");
+    header("Location: ../auth/login.php?error=Anda harus login untuk mengakses halaman ini");
     exit;
 }

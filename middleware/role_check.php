@@ -1,14 +1,9 @@
 <?php
 
-function checkRole($role)
-{
-    if (!isset($_SESSION['role'])) {
-        header("Location: ../auth/login.php?error=Silakan login terlebih dahulu");
-        exit;
-    }
-
-    if ($_SESSION['role'] !== $role) {
-        header("Location: ../auth/login.php?error=Akses ditolak");
+function checkRole($required_role) {
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== $required_role) {
+        // Redirect atau tampilkan pesan error jika role tidak sesuai
+        header("Location: ../auth/login.php?error=Akses ditolak. Anda tidak memiliki izin.");
         exit;
     }
 }

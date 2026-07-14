@@ -55,9 +55,9 @@ if (!$dateCheck || $dateCheck->format('Y-m-d') !== $transaction_date) {
 /*
     Validasi kategori harus kategori income yang ada di database
 */
-$categoryCheckQuery = "SELECT id FROM categories WHERE id = ? AND type = 'income'";
+$categoryCheckQuery = "SELECT id FROM categories WHERE id = ? AND type = 'income' AND (user_id IS NULL OR user_id = ?)";
 $categoryStmt = mysqli_prepare($conn, $categoryCheckQuery);
-mysqli_stmt_bind_param($categoryStmt, "i", $category_id);
+mysqli_stmt_bind_param($categoryStmt, "ii", $category_id, $user_id);
 mysqli_stmt_execute($categoryStmt);
 $categoryResult = mysqli_stmt_get_result($categoryStmt);
 
@@ -69,23 +69,10 @@ if (mysqli_num_rows($categoryResult) !== 1) {
 /*
     Simpan data pemasukan
 */
-$query = "
-    INSERT INTO transactions 
-    (user_id, category_id, type, amount, description, transaction_date)
-    VALUES (?, ?, ?, ?, ?, ?)
-";
+$query = "INSERT INTO transactions (user_id, category_id, type, amount, description, transaction_date) VALUES (?, ?, ?, ?, ?, ?)";
 
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param(
-    $stmt,
-    "iisdss",
-    $user_id,
-    $category_id,
-    $type,
-    $amount,
-    $description,
-    $transaction_date
-);
+mysqli_stmt_bind_param($stmt, "iisdss", $user_id, $category_id, $type, $amount, $description, $transaction_date);
 
 if (mysqli_stmt_execute($stmt)) {
     header("Location: income.php?success=Data pemasukan berhasil ditambahkan");

@@ -1,15 +1,13 @@
 <?php
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once '../config/bootstrap.php';
 
-checkRole('admin');
-
+checkRole('user');
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: categories.php");
     exit;
 }
 
+$user_id = $_SESSION['user_id'];
 $name = trim($_POST['name'] ?? '');
 $type = $_POST['type'] ?? '';
 
@@ -18,13 +16,13 @@ if (empty($name) || !in_array($type, ['income', 'expense'])) {
     exit;
 }
 
-// Simpan kategori baru sebagai kategori default (user_id is NULL)
-$query = "INSERT INTO categories (name, type) VALUES (?, ?)";
+// Simpan kategori baru
+$query = "INSERT INTO categories (name, type, user_id) VALUES (?, ?, ?)";
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "ss", $name, $type);
+mysqli_stmt_bind_param($stmt, "ssi", $name, $type, $user_id);
 
 if (mysqli_stmt_execute($stmt)) {
-    header("Location: categories.php?success=Kategori default baru berhasil ditambahkan.");
+    header("Location: categories.php?success=Kategori baru berhasil ditambahkan.");
 } else {
     header("Location: categories.php?error=Gagal menambahkan kategori.");
 }

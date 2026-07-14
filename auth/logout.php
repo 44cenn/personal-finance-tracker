@@ -20,5 +20,5 @@ if (ini_get("session.use_cookies")) {
 
 session_destroy();
 
-header("Location: login.php?success=Berhasil logout");
+header("Location: ../welcome.php?success=Anda berhasil logout");
 exit;

@@ -4,25 +4,27 @@ document.addEventListener("DOMContentLoaded", function () {
     forms.forEach(function (form) {
         form.addEventListener("submit", function (event) {
             let isValid = true;
-            let errorMessage = "";
+            let errorMessage = form.dataset.errorRequired || "All required fields must be filled.";
 
             const requiredInputs = form.querySelectorAll("[data-required='true']");
 
             requiredInputs.forEach(function (input) {
                 if (input.value.trim() === "") {
                     isValid = false;
-                    errorMessage = "Semua field wajib harus diisi.";
+                    // Pesan error sudah diatur di awal
                 }
             });
 
             const amountInput = form.querySelector("[data-amount='true']");
 
             if (amountInput) {
-                const amountValue = Number(amountInput.value);
+                // Un-format the value before validation to handle thousand separators (e.g., "5.000.000")
+                const rawValue = amountInput.value.replace(/\D/g, '');
+                const amountValue = Number(rawValue);
 
                 if (amountValue <= 0) {
                     isValid = false;
-                    errorMessage = "Jumlah uang harus lebih dari 0.";
+                    errorMessage = form.dataset.errorAmount || "Amount must be greater than 0.";
                 }
             }
 

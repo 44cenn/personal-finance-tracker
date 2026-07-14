@@ -1,12 +1,7 @@
 <?php
-
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once '../config/bootstrap.php';
 
 checkRole('user');
-
-$user_id = $_SESSION['user_id'];
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -33,32 +28,33 @@ if (mysqli_num_rows($result) !== 1) {
 
 $income = mysqli_fetch_assoc($result);
 
-$categoryQuery = "SELECT * FROM categories WHERE type = 'income' ORDER BY name ASC";
-$categories = mysqli_query($conn, $categoryQuery);
+$categoryQuery = "SELECT * FROM categories WHERE type = 'income' AND (user_id IS NULL OR user_id = ?) ORDER BY name ASC";
+$categoryStmt = mysqli_prepare($conn, $categoryQuery);
+mysqli_stmt_bind_param($categoryStmt, "i", $user_id);
+mysqli_stmt_execute($categoryStmt);
+$categories = mysqli_stmt_get_result($categoryStmt);
 
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="<?= htmlspecialchars($current_language) ?>">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Pemasukan</title>
+    <title><?= __('income') ?> - Personal Finance Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
-<body>
-
-<nav class="navbar navbar-dark bg-primary">
-    <div class="container">
-        <span class="navbar-brand">Personal Finance Tracker</span>
-        <a href="income.php" class="btn btn-outline-light btn-sm">Kembali</a>
-    </div>
-</nav>
+<body data-theme="<?= htmlspecialchars($current_theme) ?>">
+<?php include __DIR__ . '/navbar.php'; ?>
 
 <div class="container mt-4">
-    <h3>Edit Pemasukan</h3>
+    <div class="d-flex align-items-center mb-3">
+        <a href="income.php" class="btn btn-outline-secondary me-2 btn-back-icon" title="Kembali ke Pemasukan">‹</a>
+        <h3>Edit Pemasukan</h3>
+    </div>
 
     <div class="card mt-3">
         <div class="card-body">
@@ -78,8 +74,7 @@ $categories = mysqli_query($conn, $categoryQuery);
                     <select name="category_id" class="form-select" required data-required="true"> 
                         <option value="">-- Pilih Kategori --</option>
                         <?php while ($category = mysqli_fetch_assoc($categories)) : ?>
-                            <option value="<?= $category['id']; ?>"
-                                <?= $category['id'] == $income['category_id'] ? 'selected' : ''; ?>>
+                            <option value="<?= $category['id']; ?>" <?= $category['id'] == $income['category_id'] ? 'selected' : ''; ?>>
                                 <?= htmlspecialchars($category['name']); ?>
                             </option>
                         <?php endwhile; ?>
@@ -88,16 +83,12 @@ $categories = mysqli_query($conn, $categoryQuery);
 
                 <div class="mb-3">
                     <label class="form-label">Jumlah Pemasukan</label>
-                    <input type="number" name="amount" class="form-control"
-                           value="<?= htmlspecialchars($income['amount']); ?>" required min="1">
-                           data-required="true" data-amount="true">
+                    <input type="text" name="amount" class="form-control" value="<?= htmlspecialchars($income['amount']); ?>" required data-required="true" data-amount="true" data-format="numeric">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Tanggal</label>
-                    <input type="date" name="transaction_date" class="form-control"
-                           value="<?= htmlspecialchars($income['transaction_date']); ?>" required>
-                           data-required="true">
+                    <input type="date" name="transaction_date" class="form-control" value="<?= htmlspecialchars($income['transaction_date']); ?>" required data-required="true">
                 </div>
 
                 <div class="mb-3">
@@ -106,7 +97,6 @@ $categories = mysqli_query($conn, $categoryQuery);
                 </div>
 
                 <button type="submit" class="btn btn-warning">Update</button>
-                <a href="income.php" class="btn btn-secondary">Batal</a>
 
             </form>
 
@@ -115,6 +105,10 @@ $categories = mysqli_query($conn, $categoryQuery);
 </div>
 
 <script src="../assets/js/validation.js"></script>
+<script src="../assets/js/input-formatter.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -1,12 +1,7 @@
 <?php
-
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once '../config/bootstrap.php';
 
 checkRole('user');
-
-$user_id = $_SESSION['user_id'];
 
 /*
     Ambil data filter dari URL
@@ -32,8 +27,11 @@ $offset = ($page - 1) * $limit;
 /*
     Ambil semua kategori untuk dropdown filter
 */
-$categoryQuery = "SELECT * FROM categories ORDER BY type ASC, name ASC";
-$categoryResult = mysqli_query($conn, $categoryQuery);
+$categoryQuery = "SELECT * FROM categories WHERE user_id IS NULL OR user_id = ? ORDER BY type ASC, name ASC";
+$categoryStmt = mysqli_prepare($conn, $categoryQuery);
+mysqli_stmt_bind_param($categoryStmt, "i", $user_id);
+mysqli_stmt_execute($categoryStmt);
+$categoryResult = mysqli_stmt_get_result($categoryStmt);
 
 /*
     Query dasar untuk filter
@@ -151,34 +149,28 @@ $queryString = http_build_query([
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="<?= htmlspecialchars($current_language) ?>">
 <head>
     <meta charset="UTF-8">
-    <title>Riwayat Transaksi</title>
+    <title><?= __('history') ?> - Personal Finance Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
-<body class="bg-light">
-
-<nav class="navbar navbar-dark bg-primary">
-    <div class="container">
-        <span class="navbar-brand">Personal Finance Tracker</span>
-
-        <div>
-            <a href="dashboard.php" class="btn btn-outline-light btn-sm">Dashboard</a>
-            <a href="income.php" class="btn btn-outline-light btn-sm">Pemasukan</a>
-            <a href="expense.php" class="btn btn-outline-light btn-sm">Pengeluaran</a>
-            <a href="../auth/logout.php" class="btn btn-outline-light btn-sm">Logout</a>
-        </div>
-    </div>
-</nav>
+<body data-theme="<?= htmlspecialchars($current_theme) ?>">
+<?php
+include __DIR__ . '/navbar.php';
+?>
 
 <div class="container mt-4">
 
-    <h3>Riwayat Transaksi</h3>
+    <div class="d-flex align-items-center mb-3">
+        <a href="../index.php" class="btn btn-outline-secondary me-2 btn-back-icon" title="Kembali ke Home">‹</a>
+        <h3>Riwayat Transaksi</h3>
+    </div>
     <p class="text-muted">Gunakan filter untuk mencari transaksi tertentu.</p>
 
     <!-- Filter -->
@@ -289,7 +281,7 @@ $queryString = http_build_query([
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        Rp <?= number_format($row['amount'], 0, ',', '.'); ?>
+                                        <?= format_currency($row['amount'], $current_currency) ?>
                                     </td>
                                     <td><?= htmlspecialchars($row['description']); ?></td>
                                 </tr>
@@ -310,24 +302,38 @@ $queryString = http_build_query([
                 <ul class="pagination justify-content-center">
 
                     <li class="page-item <?= $page <= 1 ? 'disabled' : ''; ?>">
-                        <a class="page-link"
-                           href="transactions.php?<?= $queryString; ?>&page=<?= $page - 1; ?>">
+                        <a class="page-link" href="transactions.php?<?= $queryString; ?>&page=<?= $page - 1; ?>">
                             Previous
                         </a>
                     </li>
 
-                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                        <li class="page-item <?= $page == $i ? 'active' : ''; ?>">
-                            <a class="page-link"
-                               href="transactions.php?<?= $queryString; ?>&page=<?= $i; ?>">
-                                <?= $i; ?>
-                            </a>
-                        </li>
-                    <?php endfor; ?>
+                    <?php
+                        $pageWindow = 2;
+                        $startPage = max(1, $page - $pageWindow);
+                        $endPage = min($totalPages, $page + $pageWindow);
+
+                        if ($startPage > 1) {
+                            echo '<li class="page-item"><a class="page-link" href="transactions.php?'.$queryString.'&page=1">1</a></li>';
+                            if ($startPage > 2) {
+                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                            }
+                        }
+
+                        for ($i = $startPage; $i <= $endPage; $i++) {
+                            $activeClass = ($page == $i) ? 'active' : '';
+                            echo '<li class="page-item '.$activeClass.'"><a class="page-link" href="transactions.php?'.$queryString.'&page='.$i.'">'.$i.'</a></li>';
+                        }
+
+                        if ($endPage < $totalPages) {
+                            if ($endPage < $totalPages - 1) {
+                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                            }
+                            echo '<li class="page-item"><a class="page-link" href="transactions.php?'.$queryString.'&page='.$totalPages.'">'.$totalPages.'</a></li>';
+                        }
+                    ?>
 
                     <li class="page-item <?= $page >= $totalPages ? 'disabled' : ''; ?>">
-                        <a class="page-link"
-                           href="transactions.php?<?= $queryString; ?>&page=<?= $page + 1; ?>">
+                        <a class="page-link" href="transactions.php?<?= $queryString; ?>&page=<?= $page + 1; ?>">
                             Next
                         </a>
                     </li>
@@ -339,6 +345,9 @@ $queryString = http_build_query([
     </div>
 
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

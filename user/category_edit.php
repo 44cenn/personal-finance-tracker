@@ -1,10 +1,7 @@
 <?php
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once '../config/bootstrap.php';
 
-checkRole('admin');
-
+checkRole('user');
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -12,35 +9,34 @@ if (!$id) {
     exit;
 }
 
-// Ambil data kategori default yang akan diedit
-$query = "SELECT * FROM categories WHERE id = ? AND user_id IS NULL";
+// Ambil data kategori yang akan diedit, pastikan milik user yang login
+$query = "SELECT * FROM categories WHERE id = ? AND user_id = ?";
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_bind_param($stmt, "ii", $id, $user_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
 if (mysqli_num_rows($result) !== 1) {
-    header("Location: categories.php?error=Kategori default tidak ditemukan.");
+    header("Location: categories.php?error=Kategori tidak ditemukan atau Anda tidak punya hak akses.");
     exit;
 }
 
 $category = mysqli_fetch_assoc($result);
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html> 
+<html lang="<?= htmlspecialchars($current_language) ?>">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Kategori Default</title>
+    <title><?= __('settings') ?> - Personal Finance Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.php">Admin Panel</a>
-            <a href="categories.php" class="btn btn-outline-light btn-sm">Kembali ke Kategori</a>
+            <a class="navbar-brand" href="../welcome.php">Finance Tracker</a>
+            <a href="categories.php" class="btn btn-outline-light btn-sm">Kembali</a>
         </div>
     </nav>
 
@@ -70,5 +66,8 @@ $category = mysqli_fetch_assoc($result);
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

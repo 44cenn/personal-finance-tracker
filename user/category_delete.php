@@ -1,10 +1,7 @@
 <?php
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once '../config/bootstrap.php';
 
-checkRole('admin');
-
+checkRole('user');
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -25,16 +22,16 @@ if ($row['count'] > 0) {
     exit;
 }
 
-// Hapus kategori, pastikan hanya menghapus kategori default
-$deleteQuery = "DELETE FROM categories WHERE id = ? AND user_id IS NULL";
+// Hapus kategori, pastikan hanya menghapus kategori milik user yang login
+$deleteQuery = "DELETE FROM categories WHERE id = ? AND user_id = ?";
 $deleteStmt = mysqli_prepare($conn, $deleteQuery);
-mysqli_stmt_bind_param($deleteStmt, "i", $id);
+mysqli_stmt_bind_param($deleteStmt, "ii", $id, $user_id);
 
 if (mysqli_stmt_execute($deleteStmt)) {
     if (mysqli_stmt_affected_rows($deleteStmt) > 0) {
         header("Location: categories.php?success=Kategori berhasil dihapus.");
     } else {
-        header("Location: categories.php?error=Kategori tidak ditemukan atau bukan kategori default.");
+        header("Location: categories.php?error=Kategori tidak ditemukan atau Anda tidak punya hak akses.");
     }
 } else {
     header("Location: categories.php?error=Gagal menghapus kategori.");

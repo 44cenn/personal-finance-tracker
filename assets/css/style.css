@@ -1,97 +1,413 @@
+/* --- THEME DEFINITIONS --- */
+
+/* 1. Default (Light) — also applied to :root as a fallback so pages
+   that never set data-theme on <html> still render correctly */
+:root,
+[data-theme="default"] {
+    --primary-color: #2563eb; --primary-dark: #1e40af; --success-color: #16a34a; --danger-color: #dc2626; --warning-color: #f59e0b; --info-color: #0ea5e9; --dark-color: #111827; --muted-color: #6b7280; --bg-color: #f3f6fb; --text-color: #1f2937; --card-bg: #ffffff; --border-color: #e5e7eb; --header-text: #ffffff;
+}
+
+/* 2. Dark Mode */
+[data-theme="dark"] {
+    --primary-color: #3b82f6; --primary-dark: #60a5fa; --success-color: #22c55e; --danger-color: #ef4444; --warning-color: #eab308; --info-color: #38bdf8; --dark-color: #f9fafb; --muted-color: #9ca3af; --bg-color: #111827; --text-color: #d1d5db; --card-bg: #1f2937; --border-color: #374151; --header-text: #ffffff;
+}
+
+/* 3. Ocean Blue */
+[data-theme="ocean"] {
+    --primary-color: #0ea5e9; --primary-dark: #0284c7; --success-color: #10b981; --danger-color: #f43f5e; --warning-color: #f59e0b; --info-color: #6366f1; --dark-color: #0369a1; --muted-color: #64748b; --bg-color: #f0f9ff; --text-color: #0c4a6e; --card-bg: #ffffff; --border-color: #e0f2fe; --header-text: #ffffff;
+}
+
+/* 4. Forest Green */
+[data-theme="forest"] {
+    --primary-color: #16a34a; --primary-dark: #15803d; --success-color: #65a30d; --danger-color: #c2410c; --warning-color: #facc15; --info-color: #0d9488; --dark-color: #14532d; --muted-color: #57534e; --bg-color: #f0fdf4; --text-color: #1c1917; --card-bg: #ffffff; --border-color: #dcfce7; --header-text: #ffffff;
+}
+
+/* 5. Sunset Orange */
+[data-theme="sunset"] {
+    --primary-color: #f97316; --primary-dark: #ea580c; --success-color: #16a34a; --danger-color: #be123c; --warning-color: #facc15; --info-color: #0ea5e9; --dark-color: #7c2d12; --muted-color: #78716c; --bg-color: #fff7ed; --text-color: #44403c; --card-bg: #ffffff; --border-color: #ffedd5; --header-text: #ffffff;
+}
+
+/* 6. Royal Purple */
+[data-theme="royal"] {
+    --primary-color: #8b5cf6; --primary-dark: #7c3aed; --success-color: #22c55e; --danger-color: #f43f5e; --warning-color: #f59e0b; --info-color: #ec4899; --dark-color: #581c87; --muted-color: #6b7280; --bg-color: #f5f3ff; --text-color: #3730a3; --card-bg: #ffffff; --border-color: #ede9fe; --header-text: #ffffff;
+}
+
+/* 7. Monochrome */
+[data-theme="mono"] {
+    --primary-color: #4b5563; --primary-dark: #1f2937; --success-color: #4b5563; --danger-color: #4b5563; --warning-color: #4b5563; --info-color: #4b5563; --dark-color: #000000; --muted-color: #9ca3af; --bg-color: #f3f4f6; --text-color: #111827; --card-bg: #ffffff; --border-color: #e5e7eb; --header-text: #ffffff;
+}
+
+/* 8. Pastel Dream */
+[data-theme="pastel"] {
+    --primary-color: #a78bfa; --primary-dark: #8b5cf6; --success-color: #6ee7b7; --danger-color: #fb7185; --warning-color: #fde047; --info-color: #7dd3fc; --dark-color: #5b21b6; --muted-color: #94a3b8; --bg-color: #f0f9ff; --text-color: #475569; --card-bg: #ffffff; --border-color: #e0f2fe; --header-text: #4c1d95;
+}
+
+/* 9. Crimson Red */
+[data-theme="crimson"] {
+    --primary-color: #dc2626; --primary-dark: #b91c1c; --success-color: #16a34a; --danger-color: #9f1239; --warning-color: #f97316; --info-color: #d946ef; --dark-color: #7f1d1d; --muted-color: #52525b; --bg-color: #fef2f2; --text-color: #3f3f46; --card-bg: #ffffff; --border-color: #fee2e2; --header-text: #ffffff;
+}
+
+/* 10. Golden Hour */
+[data-theme="golden"] {
+    --primary-color: #f59e0b; --primary-dark: #d97706; --success-color: #16a34a; --danger-color: #dc2626; --warning-color: #ea580c; --info-color: #0ea5e9; --dark-color: #78350f; --muted-color: #78716c; --bg-color: #fefce8; --text-color: #363636; --card-bg: #ffffff; --border-color: #fef9c3; --header-text: #ffffff;
+}
+
+/* --- Base Styles using Variables --- */
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Only pages using the fixed-top auth navbar (login/register) need this
+   offset, so it's scoped to .auth-wrapper instead of applying globally
+   and creating a blank gap on normal (non-fixed navbar) pages. */
+body:has(.auth-wrapper) {
+    padding-top: 76px;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
 }
 
 .navbar-brand {
-    font-weight: bold;
+    font-weight: 800;
+    letter-spacing: 0.2px;
 }
 
-.card {
-    border-radius: 12px;
+/* Custom Toggler Icon Color for better visibility on dark navbar */
+.navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-.card-header {
+.navbar .btn {
+    border-radius: 999px;
+    padding: 6px 14px;
     font-weight: 600;
 }
 
-.table th,
-.table td {
-    vertical-align: middle;
+/* Page Layout */
+.container {
+    max-width: 1180px;
 }
 
-.btn {
-    border-radius: 8px;
+.page-header {
+    margin-bottom: 24px;
 }
 
 .page-title {
-    font-weight: 700;
-    margin-bottom: 5px;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--dark-color);
 }
 
 .page-subtitle {
-    color: #6c757d;
-    margin-bottom: 20px;
+    color: var(--muted-color);
+    margin-bottom: 0;
 }
 
+/* Card */
+.card {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    background-color: var(--card-bg);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 18px 18px 0 0 !important;
+    font-weight: 700;
+    background-color: var(--card-bg);
+}
+
+.card-body {
+    padding: 22px;
+}
+
+/* Dashboard Stat Card */
 .stat-card {
-    min-height: 120px;
+    min-height: 132px;
+    transition: 0.2s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+}
+
+.stat-card h6 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted-color);
 }
 
 .stat-card h4 {
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.stat-card::after {
+    content: "";
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    right: -28px;
+    bottom: -28px;
+    border-radius: 50%;
+    opacity: 0.12;
+}
+
+.stat-income::after {
+    background: var(--success-color);
+}
+
+.stat-expense::after {
+    background: var(--danger-color);
+}
+
+.stat-balance::after {
+    background: var(--primary-color);
+}
+
+.stat-count::after {
+    background: var(--dark-color);
+}
+
+/* Form */
+.form-label {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.form-control,
+.form-select {
+    border-radius: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(10, 65, 194, 0.15);
+}
+
+/* Override browser autofill styles (e.g., blue background in Chrome) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--card-bg) inset !important;
+    -webkit-text-fill-color: var(--text-color) !important;
+}
+
+/* Button */
+.btn {
+    border-radius: 12px;
     font-weight: 700;
 }
 
-.form-label {
-    font-weight: 600;
+.btn-primary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
-.action-buttons a {
-    margin-right: 4px;
-    margin-bottom: 4px;
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
 }
 
+.btn-success {
+    background: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-warning {
+    background: var(--warning-color);
+    border-color: var(--warning-color);
+}
+
+.btn-info {
+    background: var(--info-color);
+    border-color: var(--info-color);
+}
+
+/* Custom Back Button */
+.btn-back-icon {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 0.1rem 0.8rem;
+    line-height: 1;
+}
+
+/* Table */
 .table-responsive {
-    width: 100%;
+    border-radius: 14px;
     overflow-x: auto;
 }
 
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-size: 14px;
+    white-space: nowrap;
+    color: var(--text-color);
+}
+
+.table td {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.action-buttons {
+    white-space: nowrap;
+}
+
+.action-buttons a {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+/* Badge */
+.badge {
+    border-radius: 999px;
+    padding: 7px 11px;
+}
+
+/* Alert */
+.alert {
+    border-radius: 14px;
+    border: none;
+}
+
+/* Pagination */
+.pagination .page-link {
+    border-radius: 10px;
+    margin: 0 3px;
+    color: var(--primary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Chart */
 canvas {
     max-width: 100%;
 }
 
-/* Responsive Navbar */
+/* Auth Page */
+.auth-wrapper {
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 14px;
+    background: linear-gradient(135deg, #3b6fe0 0%, #1e3a8a 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    border-radius: 22px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+    background-color: #ffffff;
+}
+
+.auth-title {
+    font-weight: 800;
+    color: #111827;
+}
+
+.auth-subtitle {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.auth-card .form-label {
+    color: #1f2937;
+}
+
+.auth-card .form-control {
+    background-color: #ffffff;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+}
+
+.auth-card a {
+    color: var(--primary-color);
+}
+
+/* Empty state */
+.empty-state {
+    padding: 22px;
+    text-align: center;
+    color: var(--muted-color);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .navbar .container {
         flex-direction: column;
         align-items: flex-start;
+        gap: 10px;
     }
 
-    .navbar .container div {
-        margin-top: 10px;
-        display: flex;
+    .navbar .d-flex {
+        width: 100%;
         flex-wrap: wrap;
         gap: 6px;
     }
 
     .navbar .btn {
-        margin-top: 4px;
+        font-size: 13px;
+        padding: 6px 11px;
     }
 
-    h3 {
-        font-size: 22px;
+    .page-title {
+        font-size: 23px;
     }
 
-    .card-body h4 {
+    .card-body {
+        padding: 17px;
+    }
+
+    .stat-card {
+        min-height: 110px;
+    }
+
+    .stat-card h4 {
         font-size: 20px;
     }
 
-    .btn {
-        font-size: 14px;
-    }
-
-    table {
-        font-size: 14px;
+    .table th,
+    .table td {
+        font-size: 13px;
     }
 }
 
@@ -109,16 +425,7 @@ canvas {
         font-size: 14px;
     }
 
-    .card-body {
-        padding: 15px;
-    }
-
     .btn {
-        width: auto;
-        margin-bottom: 4px;
-    }
-
-    .navbar-brand {
-        font-size: 18px;
+        font-size: 13px;
     }
 }

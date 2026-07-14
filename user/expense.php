@@ -1,12 +1,7 @@
 <?php
-
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once '../config/bootstrap.php';
 
 checkRole('user');
-
-$user_id = $_SESSION['user_id'];
 
 $query = "
     SELECT transactions.*, categories.name AS category_name
@@ -32,25 +27,20 @@ $result = mysqli_stmt_get_result($stmt);
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
-<body>
-
-<nav class="navbar navbar-dark bg-danger">
-    <div class="container">
-        <span class="navbar-brand">Personal Finance Tracker</span>
-        <div>
-            <a href="dashboard.php" class="btn btn-outline-light btn-sm">Dashboard</a>
-            <a href="../auth/logout.php" class="btn btn-outline-light btn-sm">Logout</a>
-        </div>
-    </div>
-</nav>
+<body data-theme="<?= htmlspecialchars($current_theme) ?>">
+<?php include __DIR__ . '/navbar.php'; ?>
 
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Data Pengeluaran</h3>
-        <a href="expense_create.php" class="btn btn-danger">Tambah Pengeluaran</a>
+        <div class="d-flex align-items-center">
+            <a href="../index.php" class="btn btn-outline-secondary me-2 btn-back-icon" title="Kembali ke Home">‹</a>
+            <h3>Data Pengeluaran</h3>
+        </div>
+        <a href="expense_create.php" class="btn btn-danger">+ Tambah</a>
     </div>
 
     <?php if (isset($_GET['success'])) : ?>
@@ -70,7 +60,7 @@ $result = mysqli_stmt_get_result($stmt);
 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
-                    <thead class="table-danger">
+                    <thead class="table-primary">
                         <tr>
                             <th>No</th>
                             <th>Tanggal</th>
@@ -89,7 +79,7 @@ $result = mysqli_stmt_get_result($stmt);
                                     <td><?= $no++; ?></td>
                                     <td><?= htmlspecialchars($row['transaction_date']); ?></td>
                                     <td><?= htmlspecialchars($row['category_name']); ?></td>
-                                    <td>Rp <?= number_format($row['amount'], 0, ',', '.'); ?></td>
+                                    <td><?= format_currency($row['amount'], $current_currency) ?></td>
                                     <td><?= htmlspecialchars($row['description']); ?></td>
                                     <td>
                                         <a href="expense_edit.php?id=<?= $row['id']; ?>" class="btn btn-warning btn-sm">
@@ -117,6 +107,9 @@ $result = mysqli_stmt_get_result($stmt);
     </div>
 
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
