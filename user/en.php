@@ -1,7 +1,13 @@
 <?php
-// File Terjemahan Bahasa Inggris
+
 return [
-    // General & Nav
+
+    /*
+    |--------------------------------------------------------------------------
+    | General and navigation
+    |--------------------------------------------------------------------------
+    */
+
     'home' => 'Home',
     'income' => 'Income',
     'expense' => 'Expense',
@@ -11,12 +17,15 @@ return [
     'logout' => 'Logout',
     'login' => 'Login',
     'register' => 'Register',
+
     'add' => 'Add',
     'edit' => 'Edit',
     'delete' => 'Delete',
     'update' => 'Update',
     'save' => 'Save',
     'back' => 'Back',
+    'back_to_home' => 'Back to Home',
+
     'actions' => 'Actions',
     'no' => 'No',
     'date' => 'Date',
@@ -25,13 +34,19 @@ return [
     'description' => 'Description',
     'type' => 'Type',
     'status' => 'Status',
+
     'choose_option' => '-- Select Category --',
     'search' => 'Search',
     'reset' => 'Reset',
     'previous' => 'Previous',
     'next' => 'Next',
 
-    // Dashboard
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
+
     'dashboard_title' => 'Main Dashboard',
     'welcome_message' => 'Welcome, {name}. Here is your personal finance summary.',
     'total_income' => 'Total Income',
@@ -53,7 +68,12 @@ return [
     'view_all' => 'View All',
     'no_transactions_yet' => 'No transactions yet. Please add an income or expense first.',
 
-    // Profile
+    /*
+    |--------------------------------------------------------------------------
+    | Profile
+    |--------------------------------------------------------------------------
+    */
+
     'user_profile' => 'User Profile',
     'profile_subtitle' => 'Manage your account information and security.',
     'update_information' => 'Update Information',
@@ -65,11 +85,16 @@ return [
     'confirm_new_password' => 'Confirm New Password',
     'change_profile_picture' => 'Change Profile Picture',
     'upload_new_photo' => 'Upload New Photo',
-    'upload_from_device' => 'Choose a file from your device (JPG, PNG, GIF, max 2MB).',
+    'upload_from_device' => 'Choose a file from your device (JPG, PNG, GIF, maximum 2MB).',
     'or_choose_default_avatar' => 'Or Choose a Default Avatar',
     'update_profile_picture' => 'Update Profile Picture',
 
-    // Categories
+    /*
+    |--------------------------------------------------------------------------
+    | Categories
+    |--------------------------------------------------------------------------
+    */
+
     'category_management' => 'Category Management',
     'categories_subtitle' => 'Add or manage your income and expense categories.',
     'add_new_category' => 'Add New Category',
@@ -79,9 +104,14 @@ return [
     'default' => 'Default',
     'custom' => 'Custom',
     'edit_category' => 'Edit Category',
-    'confirm_delete_category' => 'Are you sure you want to delete this category? This will fail if the category is already in use in transactions.',
+    'confirm_delete_category' => 'Are you sure you want to delete this category? The deletion will fail if the category is already used in a transaction.',
 
-    // Income/Expense Pages
+    /*
+    |--------------------------------------------------------------------------
+    | Income and expense
+    |--------------------------------------------------------------------------
+    */
+
     'income_data' => 'Income Data',
     'expense_data' => 'Expense Data',
     'edit_income' => 'Edit Income',
@@ -92,14 +122,19 @@ return [
     'expense_amount' => 'Expense Amount',
     'no_income_data' => 'No income data yet.',
     'no_expense_data' => 'No expense data yet.',
-    'confirm_delete_income' => 'Are you sure you want to delete this income data?',
-    'confirm_delete_expense' => 'Are you sure you want to delete this expense data?',
+    'confirm_delete_income' => 'Are you sure you want to delete this income record?',
+    'confirm_delete_expense' => 'Are you sure you want to delete this expense record?',
     'income_description_placeholder' => 'Example: Monthly salary',
     'expense_description_placeholder' => 'Example: Monthly groceries',
-    'amount_placeholder_income' => 'Example: 50000',
-    'amount_placeholder_expense' => 'Example: 1500',
+    'amount_placeholder_income' => 'Example: 5000000',
+    'amount_placeholder_expense' => 'Example: 150000',
 
-    // Transactions
+    /*
+    |--------------------------------------------------------------------------
+    | Transactions
+    |--------------------------------------------------------------------------
+    */
+
     'transaction_history' => 'Transaction History',
     'transactions_subtitle' => 'Use the filters to search for specific transactions.',
     'filter_transactions' => 'Filter Transactions',
@@ -111,9 +146,14 @@ return [
     'search_placeholder' => 'Example: food, fuel, pocket money',
     'transaction_data' => 'Transaction Data',
     'total_data' => 'Total data',
-    'no_transactions_found' => 'No transaction data found.',
+    'no_transactions_found' => 'No transaction data was found.',
 
-    // Settings Page
+    /*
+    |--------------------------------------------------------------------------
+    | Settings
+    |--------------------------------------------------------------------------
+    */
+
     'settings_subtitle' => 'Personalize the appearance, currency, and language of the application.',
     'display_settings' => 'Display Settings',
     'theme' => 'Theme',
@@ -122,7 +162,30 @@ return [
     'language' => 'Language',
     'save_changes' => 'Save Changes',
 
-    // Welcome Page
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication
+    |--------------------------------------------------------------------------
+    */
+
+    'login_title' => 'Login',
+    'register_title' => 'Register',
+    'back_to_welcome' => 'Back to Welcome Page',
+    'not_registered_yet' => 'Not registered yet?',
+    'already_have_account' => 'Already have an account?',
+    'login_subtitle' => 'Log in to manage your personal finances.',
+    'register_subtitle' => 'Register to start tracking your income and expenses.',
+    'enter_name' => 'Enter name',
+    'enter_email' => 'Enter email',
+    'enter_password' => 'Enter password',
+    'password_min_char' => 'Minimum 6 characters',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Welcome page
+    |--------------------------------------------------------------------------
+    */
+
     'welcome_title' => 'Welcome to Personal Finance Tracker',
     'hero_title' => 'Manage Your Finances with Ease',
     'hero_subtitle' => 'Track every income and expense to achieve your financial goals.',
@@ -138,20 +201,12 @@ return [
     'reports_and_charts_desc' => 'Analyze your spending habits with easy-to-understand charts.',
     'copyright' => 'Personal Finance Tracker. All Rights Reserved.',
 
-    // Auth
-    'login_title' => 'Login',
-    'register_title' => 'Register',
-    'back_to_welcome' => 'Back to Welcome Page',
-    'not_registered_yet' => 'Not registered yet?',
-    'already_have_account' => 'Already have an account?',
-    'login_subtitle' => 'Log in to manage your personal finances.',
-    'register_subtitle' => 'Register to start tracking your income and expenses.',
-    'enter_name' => 'Enter name',
-    'enter_email' => 'Enter email',
-    'enter_password' => 'Enter password',
-    'password_min_char' => 'Minimum 6 characters',
+    /*
+    |--------------------------------------------------------------------------
+    | Validation and messages
+    |--------------------------------------------------------------------------
+    */
 
-    // Validation & Messages
     'error_all_fields_required' => 'All required fields must be filled.',
     'error_amount_must_be_positive' => 'Amount must be greater than 0.',
     'profile_updated_successfully' => 'Profile information updated successfully.',
@@ -169,30 +224,30 @@ return [
     'expense_deleted_successfully' => 'Expense data deleted successfully.',
     'no_data_changed' => 'No data was changed.',
     'data_not_found' => 'Data not found.',
-    'generic_error' => 'An error occurred, please try again.',
+    'generic_error' => 'An error occurred. Please try again.',
     'invalid_category' => 'Invalid category.',
     'invalid_date_format' => 'Invalid date format.',
     'amount_must_be_numeric' => 'Amount must be a number.',
-    'data_not_found_or_not_yours' => 'Data not found or does not belong to you.',
+    'data_not_found_or_not_yours' => 'Data was not found or does not belong to you.',
     'failed_to_delete_data' => 'Failed to delete data.',
     'failed_to_update_data' => 'Failed to update data.',
     'failed_to_add_data' => 'Failed to add data.',
     'login_required' => 'You must be logged in to access this page.',
-    'invalid_session' => 'Invalid session, please log in again.',
+    'invalid_session' => 'Your session is invalid. Please log in again.',
     'login_failed' => 'Incorrect email or password.',
     'email_password_required' => 'Email and password are required.',
     'name_email_password_required' => 'Name, email, and password are required.',
-    'email_in_use' => 'Email is already in use by another account.',
-    'password_mismatch' => 'New password confirmation does not match.',
-    'current_password_incorrect' => 'Current password is incorrect.',
+    'email_in_use' => 'The email address is already used by another account.',
+    'password_mismatch' => 'The new password confirmation does not match.',
+    'current_password_incorrect' => 'The current password is incorrect.',
     'failed_to_update_password' => 'Failed to change password.',
     'failed_to_update_profile' => 'Failed to update profile.',
     'invalid_email_format' => 'Invalid email format.',
     'name_email_required' => 'Name and email cannot be empty.',
-    'file_too_large' => 'File size is too large. Max 2MB.',
-    'invalid_file_type' => 'File type not allowed. Only JPG, PNG, GIF.',
-    'failed_to_move_file' => 'Failed to move uploaded file.',
-    'no_file_chosen' => 'No photo was chosen or uploaded.',
+    'file_too_large' => 'The file is too large. The maximum size is 2MB.',
+    'invalid_file_type' => 'The file type is not allowed. Only JPG, PNG, and GIF are accepted.',
+    'failed_to_move_file' => 'Failed to move the uploaded file.',
+    'no_file_chosen' => 'No profile picture was selected or uploaded.',
     'invalid_avatar' => 'The selected avatar is invalid.',
-    'failed_to_update_picture' => 'Failed to update profile picture in the database.',
+    'failed_to_update_picture' => 'Failed to update the profile picture in the database.',
 ];

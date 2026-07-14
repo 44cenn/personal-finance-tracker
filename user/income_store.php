@@ -1,83 +1,194 @@
 <?php
 
-include '../middleware/auth_check.php';
-include '../middleware/role_check.php';
-include '../config/database.php';
+require_once __DIR__ . '/../config/bootstrap.php';
+
+/** @var mysqli $conn */
+/** @var int $user_id */
 
 checkRole('user');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: income.php");
+    header('Location: expense.php');
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
-$category_id = $_POST['category_id'] ?? '';
-$amount = $_POST['amount'] ?? '';
-$transaction_date = $_POST['transaction_date'] ?? '';
-$description = trim($_POST['description'] ?? '');
-$type = 'income';
+$categoryId = filter_input(
+    INPUT_POST,
+    'category_id',
+    FILTER_VALIDATE_INT
+);
 
-/*
-    Validasi input kosong
-*/
-if (empty($category_id) || empty($amount) || empty($transaction_date)) {
-    header("Location: income_create.php?error=Kategori, jumlah, dan tanggal wajib diisi");
+$amountInput = $_POST['amount'] ?? '';
+$transactionDate = trim(
+    (string) ($_POST['transaction_date'] ?? '')
+);
+$description = trim(
+    (string) ($_POST['description'] ?? '')
+);
+
+$amountInput = str_replace(
+    ['.', ',', ' '],
+    '',
+    (string) $amountInput
+);
+
+if (
+    !$categoryId
+    || $amountInput === ''
+    || $transactionDate === ''
+) {
+    header(
+        'Location: expense_create.php?error='
+        . urlencode('error_all_fields_required')
+    );
     exit;
 }
 
-/*
-    Validasi jumlah harus angka
-*/
-if (!is_numeric($amount)) {
-    header("Location: income_create.php?error=Jumlah pemasukan harus berupa angka");
+if (!is_numeric($amountInput)) {
+    header(
+        'Location: expense_create.php?error='
+        . urlencode('amount_must_be_numeric')
+    );
     exit;
 }
 
-/*
-    Validasi jumlah harus lebih dari 0
-*/
+$amount = (float) $amountInput;
+
 if ($amount <= 0) {
-    header("Location: income_create.php?error=Jumlah pemasukan harus lebih dari 0");
+    header(
+        'Location: expense_create.php?error='
+        . urlencode('error_amount_must_be_positive')
+    );
+    exit;
+}
+
+$dateCheck = DateTime::createFromFormat(
+    'Y-m-d',
+    $transactionDate
+);
+
+if (
+    !$dateCheck
+    || $dateCheck->format('Y-m-d') !== $transactionDate
+) {
+    header(
+        'Location: expense_create.php?error='
+        . urlencode('invalid_date_format')
+    );
     exit;
 }
 
 /*
-    Validasi format tanggal
+|--------------------------------------------------------------------------
+| Validasi kategori
+|--------------------------------------------------------------------------
 */
-$dateCheck = DateTime::createFromFormat('Y-m-d', $transaction_date);
 
-if (!$dateCheck || $dateCheck->format('Y-m-d') !== $transaction_date) {
-    header("Location: income_create.php?error=Format tanggal tidak valid");
+$categoryCheckQuery = "
+    SELECT id
+    FROM categories
+    WHERE id = ?
+        AND type = 'expense'
+        AND (
+            user_id IS NULL
+            OR user_id = ?
+        )
+    LIMIT 1
+";
+
+$categoryStmt = mysqli_prepare(
+    $conn,
+    $categoryCheckQuery
+);
+
+if ($categoryStmt === false) {
+    header(
+        'Location: expense_create.php?error='
+        . urlencode('generic_error')
+    );
     exit;
 }
 
-/*
-    Validasi kategori harus kategori income yang ada di database
-*/
-$categoryCheckQuery = "SELECT id FROM categories WHERE id = ? AND type = 'income' AND (user_id IS NULL OR user_id = ?)";
-$categoryStmt = mysqli_prepare($conn, $categoryCheckQuery);
-mysqli_stmt_bind_param($categoryStmt, "ii", $category_id, $user_id);
+mysqli_stmt_bind_param(
+    $categoryStmt,
+    'ii',
+    $categoryId,
+    $user_id
+);
+
 mysqli_stmt_execute($categoryStmt);
-$categoryResult = mysqli_stmt_get_result($categoryStmt);
+
+$categoryResult = mysqli_stmt_get_result(
+    $categoryStmt
+);
 
 if (mysqli_num_rows($categoryResult) !== 1) {
-    header("Location: income_create.php?error=Kategori pemasukan tidak valid");
+    mysqli_stmt_close($categoryStmt);
+
+    header(
+        'Location: expense_create.php?error='
+        . urlencode('invalid_category')
+    );
     exit;
 }
+
+mysqli_stmt_close($categoryStmt);
 
 /*
-    Simpan data pemasukan
+|--------------------------------------------------------------------------
+| Simpan transaksi
+|--------------------------------------------------------------------------
 */
-$query = "INSERT INTO transactions (user_id, category_id, type, amount, description, transaction_date) VALUES (?, ?, ?, ?, ?, ?)";
+
+$type = 'expense';
+
+$query = "
+    INSERT INTO transactions (
+        user_id,
+        category_id,
+        type,
+        amount,
+        description,
+        transaction_date
+    )
+    VALUES (?, ?, ?, ?, ?, ?)
+";
 
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "iisdss", $user_id, $category_id, $type, $amount, $description, $transaction_date);
 
-if (mysqli_stmt_execute($stmt)) {
-    header("Location: income.php?success=Data pemasukan berhasil ditambahkan");
-    exit;
-} else {
-    header("Location: income_create.php?error=Data pemasukan gagal ditambahkan");
+if ($stmt === false) {
+    header(
+        'Location: expense_create.php?error='
+        . urlencode('failed_to_add_data')
+    );
     exit;
 }
+
+mysqli_stmt_bind_param(
+    $stmt,
+    'iisdss',
+    $user_id,
+    $categoryId,
+    $type,
+    $amount,
+    $description,
+    $transactionDate
+);
+
+if (!mysqli_stmt_execute($stmt)) {
+    mysqli_stmt_close($stmt);
+
+    header(
+        'Location: expense_create.php?error='
+        . urlencode('failed_to_add_data')
+    );
+    exit;
+}
+
+mysqli_stmt_close($stmt);
+
+header(
+    'Location: expense.php?success='
+    . urlencode('expense_added_successfully')
+);
+exit;

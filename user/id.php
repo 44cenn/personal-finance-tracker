@@ -1,7 +1,13 @@
 <?php
-// File Terjemahan Bahasa Indonesia
+
 return [
-    // General & Nav
+
+    /*
+    |--------------------------------------------------------------------------
+    | Umum dan navigasi
+    |--------------------------------------------------------------------------
+    */
+
     'home' => 'Beranda',
     'income' => 'Pemasukan',
     'expense' => 'Pengeluaran',
@@ -11,12 +17,15 @@ return [
     'logout' => 'Keluar',
     'login' => 'Masuk',
     'register' => 'Daftar',
+
     'add' => 'Tambah',
     'edit' => 'Edit',
     'delete' => 'Hapus',
-    'update' => 'Update',
+    'update' => 'Perbarui',
     'save' => 'Simpan',
     'back' => 'Kembali',
+    'back_to_home' => 'Kembali ke Beranda',
+
     'actions' => 'Aksi',
     'no' => 'No',
     'date' => 'Tanggal',
@@ -25,13 +34,19 @@ return [
     'description' => 'Keterangan',
     'type' => 'Tipe',
     'status' => 'Status',
+
     'choose_option' => '-- Pilih Kategori --',
     'search' => 'Cari',
     'reset' => 'Reset',
     'previous' => 'Sebelumnya',
     'next' => 'Berikutnya',
 
-    // Dashboard
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
+
     'dashboard_title' => 'Dashboard Utama',
     'welcome_message' => 'Selamat datang, {name}. Berikut ringkasan keuangan pribadi Anda.',
     'total_income' => 'Total Pemasukan',
@@ -53,10 +68,15 @@ return [
     'view_all' => 'Lihat Semua',
     'no_transactions_yet' => 'Belum ada transaksi. Silakan tambah pemasukan atau pengeluaran terlebih dahulu.',
 
-    // Profile
+    /*
+    |--------------------------------------------------------------------------
+    | Profil
+    |--------------------------------------------------------------------------
+    */
+
     'user_profile' => 'Profil Pengguna',
     'profile_subtitle' => 'Kelola informasi akun dan keamanan Anda.',
-    'update_information' => 'Update Informasi',
+    'update_information' => 'Perbarui Informasi',
     'full_name' => 'Nama Lengkap',
     'email_address' => 'Alamat Email',
     'change_password' => 'Ganti Password',
@@ -64,12 +84,17 @@ return [
     'new_password' => 'Password Baru',
     'confirm_new_password' => 'Konfirmasi Password Baru',
     'change_profile_picture' => 'Ganti Foto Profil',
-    'upload_new_photo' => 'Upload Foto Baru',
-    'upload_from_device' => 'Pilih file dari perangkat Anda (JPG, PNG, GIF, maks 2MB).',
+    'upload_new_photo' => 'Unggah Foto Baru',
+    'upload_from_device' => 'Pilih file dari perangkat Anda (JPG, PNG, GIF, maksimal 2MB).',
     'or_choose_default_avatar' => 'Atau Pilih Avatar Default',
-    'update_profile_picture' => 'Update Foto Profil',
+    'update_profile_picture' => 'Perbarui Foto Profil',
 
-    // Categories
+    /*
+    |--------------------------------------------------------------------------
+    | Kategori
+    |--------------------------------------------------------------------------
+    */
+
     'category_management' => 'Manajemen Kategori',
     'categories_subtitle' => 'Tambah atau kelola kategori pemasukan dan pengeluaran Anda.',
     'add_new_category' => 'Tambah Kategori Baru',
@@ -79,9 +104,14 @@ return [
     'default' => 'Default',
     'custom' => 'Custom',
     'edit_category' => 'Edit Kategori',
-    'confirm_delete_category' => 'Yakin ingin menghapus kategori ini? Ini akan gagal jika kategori sudah digunakan di transaksi.',
+    'confirm_delete_category' => 'Yakin ingin menghapus kategori ini? Penghapusan akan gagal jika kategori sudah digunakan dalam transaksi.',
 
-    // Income/Expense Pages
+    /*
+    |--------------------------------------------------------------------------
+    | Pemasukan dan pengeluaran
+    |--------------------------------------------------------------------------
+    */
+
     'income_data' => 'Data Pemasukan',
     'expense_data' => 'Data Pengeluaran',
     'edit_income' => 'Edit Pemasukan',
@@ -99,7 +129,12 @@ return [
     'amount_placeholder_income' => 'Contoh: 5000000',
     'amount_placeholder_expense' => 'Contoh: 150000',
 
-    // Transactions
+    /*
+    |--------------------------------------------------------------------------
+    | Transaksi
+    |--------------------------------------------------------------------------
+    */
+
     'transaction_history' => 'Riwayat Transaksi',
     'transactions_subtitle' => 'Gunakan filter untuk mencari transaksi tertentu.',
     'filter_transactions' => 'Filter Transaksi',
@@ -113,7 +148,12 @@ return [
     'total_data' => 'Total data',
     'no_transactions_found' => 'Data transaksi tidak ditemukan.',
 
-    // Settings
+    /*
+    |--------------------------------------------------------------------------
+    | Pengaturan
+    |--------------------------------------------------------------------------
+    */
+
     'settings_subtitle' => 'Personalisasi tampilan, mata uang, dan bahasa aplikasi.',
     'display_settings' => 'Pengaturan Tampilan',
     'theme' => 'Tema',
@@ -122,7 +162,12 @@ return [
     'language' => 'Bahasa',
     'save_changes' => 'Simpan Perubahan',
 
-    // Auth
+    /*
+    |--------------------------------------------------------------------------
+    | Autentikasi
+    |--------------------------------------------------------------------------
+    */
+
     'login_title' => 'Masuk',
     'register_title' => 'Daftar',
     'back_to_welcome' => 'Kembali ke Halaman Sambutan',
@@ -135,7 +180,12 @@ return [
     'enter_password' => 'Masukkan password',
     'password_min_char' => 'Minimal 6 karakter',
 
-    // Welcome Page
+    /*
+    |--------------------------------------------------------------------------
+    | Halaman sambutan
+    |--------------------------------------------------------------------------
+    */
+
     'welcome_title' => 'Selamat Datang di Pelacak Keuangan Pribadi',
     'hero_title' => 'Kelola Keuangan Anda dengan Mudah',
     'hero_subtitle' => 'Catat setiap pemasukan dan pengeluaran untuk mencapai tujuan finansial Anda.',
@@ -143,7 +193,7 @@ return [
     'continue_to_home' => 'Lanjutkan ke Beranda',
     'featured_features' => 'Fitur Unggulan',
     'features_subtitle' => 'Semua yang Anda butuhkan untuk mengontrol keuangan pribadi.',
-    'intuitive_dashboard' => 'Dasbor Intuitif',
+    'intuitive_dashboard' => 'Dashboard Intuitif',
     'intuitive_dashboard_desc' => 'Lihat ringkasan pemasukan, pengeluaran, dan saldo dalam satu tampilan.',
     'transaction_management' => 'Manajemen Transaksi',
     'transaction_management_desc' => 'Catat, edit, dan hapus transaksi dengan mudah dan cepat.',
@@ -151,7 +201,12 @@ return [
     'reports_and_charts_desc' => 'Analisis kebiasaan pengeluaran Anda dengan grafik yang mudah dipahami.',
     'copyright' => 'Pelacak Keuangan Pribadi. Semua Hak Cipta Dilindungi.',
 
-    // Validation & Messages
+    /*
+    |--------------------------------------------------------------------------
+    | Validasi dan pesan
+    |--------------------------------------------------------------------------
+    */
+
     'error_all_fields_required' => 'Semua kolom wajib diisi.',
     'error_amount_must_be_positive' => 'Jumlah harus lebih dari 0.',
     'profile_updated_successfully' => 'Informasi profil berhasil diperbarui.',
@@ -190,7 +245,7 @@ return [
     'invalid_email_format' => 'Format email tidak valid.',
     'name_email_required' => 'Nama dan email tidak boleh kosong.',
     'file_too_large' => 'Ukuran file terlalu besar. Maksimal 2MB.',
-    'invalid_file_type' => 'Tipe file tidak diizinkan. Hanya JPG, PNG, GIF.',
+    'invalid_file_type' => 'Tipe file tidak diizinkan. Hanya JPG, PNG, dan GIF.',
     'failed_to_move_file' => 'Gagal memindahkan file yang diunggah.',
     'no_file_chosen' => 'Tidak ada foto yang dipilih atau diunggah.',
     'invalid_avatar' => 'Avatar yang dipilih tidak valid.',

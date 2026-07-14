@@ -1,77 +1,201 @@
 /* --- THEME DEFINITIONS --- */
 
-/* 1. Default (Light) — also applied to :root as a fallback so pages
-   that never set data-theme on <html> still render correctly */
+/* 1. Default (Light) */
 :root,
 [data-theme="default"] {
-    --primary-color: #2563eb; --primary-dark: #1e40af; --success-color: #16a34a; --danger-color: #dc2626; --warning-color: #f59e0b; --info-color: #0ea5e9; --dark-color: #111827; --muted-color: #6b7280; --bg-color: #f3f6fb; --text-color: #1f2937; --card-bg: #ffffff; --border-color: #e5e7eb; --header-text: #ffffff;
+    --primary-color: #2563eb;
+    --primary-dark: #1e40af;
+    --success-color: #16a34a;
+    --danger-color: #dc2626;
+    --warning-color: #f59e0b;
+    --info-color: #0ea5e9;
+    --dark-color: #111827;
+    --muted-color: #6b7280;
+    --bg-color: #f3f6fb;
+    --text-color: #1f2937;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+    --header-text: #ffffff;
 }
 
 /* 2. Dark Mode */
 [data-theme="dark"] {
-    --primary-color: #3b82f6; --primary-dark: #60a5fa; --success-color: #22c55e; --danger-color: #ef4444; --warning-color: #eab308; --info-color: #38bdf8; --dark-color: #f9fafb; --muted-color: #9ca3af; --bg-color: #111827; --text-color: #d1d5db; --card-bg: #1f2937; --border-color: #374151; --header-text: #ffffff;
+    --primary-color: #3b82f6;
+    --primary-dark: #60a5fa;
+    --success-color: #22c55e;
+    --danger-color: #ef4444;
+    --warning-color: #eab308;
+    --info-color: #38bdf8;
+    --dark-color: #f9fafb;
+    --muted-color: #9ca3af;
+    --bg-color: #111827;
+    --text-color: #d1d5db;
+    --card-bg: #1f2937;
+    --border-color: #374151;
+    --header-text: #ffffff;
 }
 
 /* 3. Ocean Blue */
 [data-theme="ocean"] {
-    --primary-color: #0ea5e9; --primary-dark: #0284c7; --success-color: #10b981; --danger-color: #f43f5e; --warning-color: #f59e0b; --info-color: #6366f1; --dark-color: #0369a1; --muted-color: #64748b; --bg-color: #f0f9ff; --text-color: #0c4a6e; --card-bg: #ffffff; --border-color: #e0f2fe; --header-text: #ffffff;
+    --primary-color: #0ea5e9;
+    --primary-dark: #0284c7;
+    --success-color: #10b981;
+    --danger-color: #f43f5e;
+    --warning-color: #f59e0b;
+    --info-color: #6366f1;
+    --dark-color: #0369a1;
+    --muted-color: #64748b;
+    --bg-color: #f0f9ff;
+    --text-color: #0c4a6e;
+    --card-bg: #ffffff;
+    --border-color: #e0f2fe;
+    --header-text: #ffffff;
 }
 
 /* 4. Forest Green */
 [data-theme="forest"] {
-    --primary-color: #16a34a; --primary-dark: #15803d; --success-color: #65a30d; --danger-color: #c2410c; --warning-color: #facc15; --info-color: #0d9488; --dark-color: #14532d; --muted-color: #57534e; --bg-color: #f0fdf4; --text-color: #1c1917; --card-bg: #ffffff; --border-color: #dcfce7; --header-text: #ffffff;
+    --primary-color: #16a34a;
+    --primary-dark: #15803d;
+    --success-color: #65a30d;
+    --danger-color: #c2410c;
+    --warning-color: #facc15;
+    --info-color: #0d9488;
+    --dark-color: #14532d;
+    --muted-color: #57534e;
+    --bg-color: #f0fdf4;
+    --text-color: #1c1917;
+    --card-bg: #ffffff;
+    --border-color: #dcfce7;
+    --header-text: #ffffff;
 }
 
 /* 5. Sunset Orange */
 [data-theme="sunset"] {
-    --primary-color: #f97316; --primary-dark: #ea580c; --success-color: #16a34a; --danger-color: #be123c; --warning-color: #facc15; --info-color: #0ea5e9; --dark-color: #7c2d12; --muted-color: #78716c; --bg-color: #fff7ed; --text-color: #44403c; --card-bg: #ffffff; --border-color: #ffedd5; --header-text: #ffffff;
+    --primary-color: #f97316;
+    --primary-dark: #ea580c;
+    --success-color: #16a34a;
+    --danger-color: #be123c;
+    --warning-color: #facc15;
+    --info-color: #0ea5e9;
+    --dark-color: #7c2d12;
+    --muted-color: #78716c;
+    --bg-color: #fff7ed;
+    --text-color: #44403c;
+    --card-bg: #ffffff;
+    --border-color: #ffedd5;
+    --header-text: #ffffff;
 }
 
 /* 6. Royal Purple */
 [data-theme="royal"] {
-    --primary-color: #8b5cf6; --primary-dark: #7c3aed; --success-color: #22c55e; --danger-color: #f43f5e; --warning-color: #f59e0b; --info-color: #ec4899; --dark-color: #581c87; --muted-color: #6b7280; --bg-color: #f5f3ff; --text-color: #3730a3; --card-bg: #ffffff; --border-color: #ede9fe; --header-text: #ffffff;
+    --primary-color: #8b5cf6;
+    --primary-dark: #7c3aed;
+    --success-color: #22c55e;
+    --danger-color: #f43f5e;
+    --warning-color: #f59e0b;
+    --info-color: #ec4899;
+    --dark-color: #581c87;
+    --muted-color: #6b7280;
+    --bg-color: #f5f3ff;
+    --text-color: #3730a3;
+    --card-bg: #ffffff;
+    --border-color: #ede9fe;
+    --header-text: #ffffff;
 }
 
 /* 7. Monochrome */
 [data-theme="mono"] {
-    --primary-color: #4b5563; --primary-dark: #1f2937; --success-color: #4b5563; --danger-color: #4b5563; --warning-color: #4b5563; --info-color: #4b5563; --dark-color: #000000; --muted-color: #9ca3af; --bg-color: #f3f4f6; --text-color: #111827; --card-bg: #ffffff; --border-color: #e5e7eb; --header-text: #ffffff;
+    --primary-color: #4b5563;
+    --primary-dark: #1f2937;
+    --success-color: #4b5563;
+    --danger-color: #4b5563;
+    --warning-color: #4b5563;
+    --info-color: #4b5563;
+    --dark-color: #000000;
+    --muted-color: #9ca3af;
+    --bg-color: #f3f4f6;
+    --text-color: #111827;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+    --header-text: #ffffff;
 }
 
 /* 8. Pastel Dream */
 [data-theme="pastel"] {
-    --primary-color: #a78bfa; --primary-dark: #8b5cf6; --success-color: #6ee7b7; --danger-color: #fb7185; --warning-color: #fde047; --info-color: #7dd3fc; --dark-color: #5b21b6; --muted-color: #94a3b8; --bg-color: #f0f9ff; --text-color: #475569; --card-bg: #ffffff; --border-color: #e0f2fe; --header-text: #4c1d95;
+    --primary-color: #a78bfa;
+    --primary-dark: #8b5cf6;
+    --success-color: #6ee7b7;
+    --danger-color: #fb7185;
+    --warning-color: #fde047;
+    --info-color: #7dd3fc;
+    --dark-color: #5b21b6;
+    --muted-color: #94a3b8;
+    --bg-color: #f0f9ff;
+    --text-color: #475569;
+    --card-bg: #ffffff;
+    --border-color: #e0f2fe;
+    --header-text: #4c1d95;
 }
 
 /* 9. Crimson Red */
 [data-theme="crimson"] {
-    --primary-color: #dc2626; --primary-dark: #b91c1c; --success-color: #16a34a; --danger-color: #9f1239; --warning-color: #f97316; --info-color: #d946ef; --dark-color: #7f1d1d; --muted-color: #52525b; --bg-color: #fef2f2; --text-color: #3f3f46; --card-bg: #ffffff; --border-color: #fee2e2; --header-text: #ffffff;
+    --primary-color: #dc2626;
+    --primary-dark: #b91c1c;
+    --success-color: #16a34a;
+    --danger-color: #9f1239;
+    --warning-color: #f97316;
+    --info-color: #d946ef;
+    --dark-color: #7f1d1d;
+    --muted-color: #52525b;
+    --bg-color: #fef2f2;
+    --text-color: #3f3f46;
+    --card-bg: #ffffff;
+    --border-color: #fee2e2;
+    --header-text: #ffffff;
 }
 
 /* 10. Golden Hour */
 [data-theme="golden"] {
-    --primary-color: #f59e0b; --primary-dark: #d97706; --success-color: #16a34a; --danger-color: #dc2626; --warning-color: #ea580c; --info-color: #0ea5e9; --dark-color: #78350f; --muted-color: #78716c; --bg-color: #fefce8; --text-color: #363636; --card-bg: #ffffff; --border-color: #fef9c3; --header-text: #ffffff;
+    --primary-color: #f59e0b;
+    --primary-dark: #d97706;
+    --success-color: #16a34a;
+    --danger-color: #dc2626;
+    --warning-color: #ea580c;
+    --info-color: #0ea5e9;
+    --dark-color: #78350f;
+    --muted-color: #78716c;
+    --bg-color: #fefce8;
+    --text-color: #363636;
+    --card-bg: #ffffff;
+    --border-color: #fef9c3;
+    --header-text: #ffffff;
 }
 
-/* --- Base Styles using Variables --- */
+/* --- BASE STYLES --- */
 
 * {
     box-sizing: border-box;
 }
 
+html {
+    min-height: 100%;
+}
+
 body {
+    min-height: 100vh;
+    margin: 0;
     font-family: Arial, sans-serif;
     background: var(--bg-color);
     color: var(--text-color);
 }
 
-/* Only pages using the fixed-top auth navbar (login/register) need this
-   offset, so it's scoped to .auth-wrapper instead of applying globally
-   and creating a blank gap on normal (non-fixed navbar) pages. */
+/* Hanya halaman login/register yang menggunakan offset navbar fixed */
 body:has(.auth-wrapper) {
     padding-top: 76px;
 }
 
-/* Navbar */
+/* --- GENERAL NAVBAR --- */
+
 .navbar {
     background-color: #ffffff !important;
     box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
@@ -82,7 +206,11 @@ body:has(.auth-wrapper) {
     letter-spacing: 0.2px;
 }
 
-/* Custom Toggler Icon Color for better visibility on dark navbar */
+/* Toggler untuk navbar dengan latar gelap */
+.navbar-dark .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
 .navbar-dark .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
@@ -93,7 +221,53 @@ body:has(.auth-wrapper) {
     font-weight: 600;
 }
 
-/* Page Layout */
+/* --- ADMIN NAVBAR --- */
+
+.admin-navbar {
+    min-height: 64px;
+    background-color: #212529 !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.16);
+}
+
+.admin-navbar .navbar-brand {
+    color: #ffffff !important;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+.admin-navbar .navbar-brand:hover,
+.admin-navbar .navbar-brand:focus {
+    color: #f8f9fa !important;
+}
+
+.admin-navbar .btn-outline-light {
+    color: #ffffff !important;
+    background-color: transparent !important;
+    border-color: #ffffff !important;
+}
+
+.admin-navbar .btn-outline-light:hover,
+.admin-navbar .btn-outline-light:focus {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
+}
+
+.admin-navbar .btn-danger {
+    color: #ffffff !important;
+    background-color: var(--danger-color) !important;
+    border-color: var(--danger-color) !important;
+}
+
+.admin-navbar .btn-danger:hover,
+.admin-navbar .btn-danger:focus {
+    color: #ffffff !important;
+    filter: brightness(0.9);
+}
+
+/* --- PAGE LAYOUT --- */
+
 .container {
     max-width: 1180px;
 }
@@ -103,42 +277,45 @@ body:has(.auth-wrapper) {
 }
 
 .page-title {
-    font-size: 28px;
-    font-weight: 800;
     margin-bottom: 6px;
     color: var(--dark-color);
+    font-size: 28px;
+    font-weight: 800;
 }
 
 .page-subtitle {
-    color: var(--muted-color);
     margin-bottom: 0;
+    color: var(--muted-color);
 }
 
-/* Card */
+/* --- CARD --- */
+
 .card {
     border: 1px solid var(--border-color) !important;
     border-radius: 18px;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
     background-color: var(--card-bg);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
 .card-header {
     border-bottom: 1px solid var(--border-color);
     border-radius: 18px 18px 0 0 !important;
-    font-weight: 700;
     background-color: var(--card-bg);
+    color: var(--text-color);
+    font-weight: 700;
 }
 
 .card-body {
     padding: 22px;
 }
 
-/* Dashboard Stat Card */
+/* --- DASHBOARD STAT CARD --- */
+
 .stat-card {
-    min-height: 132px;
-    transition: 0.2s ease;
-    overflow: hidden;
     position: relative;
+    min-height: 132px;
+    overflow: hidden;
+    transition: 0.2s ease;
 }
 
 .stat-card:hover {
@@ -147,25 +324,25 @@ body:has(.auth-wrapper) {
 }
 
 .stat-card h6 {
+    color: var(--muted-color);
     font-size: 14px;
     font-weight: 700;
-    color: var(--muted-color);
 }
 
 .stat-card h4 {
-    font-weight: 800;
     margin-top: 8px;
+    font-weight: 800;
 }
 
 .stat-card::after {
-    content: "";
     position: absolute;
-    width: 90px;
-    height: 90px;
     right: -28px;
     bottom: -28px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     opacity: 0.12;
+    content: "";
 }
 
 .stat-income::after {
@@ -184,28 +361,41 @@ body:has(.auth-wrapper) {
     background: var(--dark-color);
 }
 
-/* Form */
+/* --- FORMS --- */
+
 .form-label {
-    font-weight: 700;
     color: var(--text-color);
+    font-weight: 700;
 }
 
 .form-control,
 .form-select {
-    border-radius: 12px;
     padding: 10px 12px;
     border: 1px solid var(--border-color);
+    border-radius: 12px;
     background-color: var(--card-bg);
     color: var(--text-color);
+}
+
+.form-control::placeholder {
+    color: var(--muted-color);
+    opacity: 0.85;
 }
 
 .form-control:focus,
 .form-select:focus {
     border-color: var(--primary-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
     box-shadow: 0 0 0 4px rgba(10, 65, 194, 0.15);
 }
 
-/* Override browser autofill styles (e.g., blue background in Chrome) */
+.form-select option {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* Override browser autofill */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -214,7 +404,8 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: var(--text-color) !important;
 }
 
-/* Button */
+/* --- BUTTONS --- */
+
 .btn {
     border-radius: 12px;
     font-weight: 700;
@@ -225,7 +416,8 @@ input:-webkit-autofill:active {
     border-color: var(--primary-color);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus {
     background: var(--primary-dark);
     border-color: var(--primary-dark);
 }
@@ -250,37 +442,44 @@ input:-webkit-autofill:active {
     border-color: var(--info-color);
 }
 
-/* Custom Back Button */
+/* Back Button */
 .btn-back-icon {
+    padding: 0.1rem 0.8rem;
     font-size: 1.5rem;
     font-weight: 700;
-    padding: 0.1rem 0.8rem;
     line-height: 1;
 }
 
-/* Table */
+/* --- TABLE --- */
+
 .table-responsive {
-    border-radius: 14px;
     overflow-x: auto;
+    border-radius: 14px;
 }
 
 .table {
     margin-bottom: 0;
-}
-
-.table th {
-    font-size: 14px;
-    white-space: nowrap;
     color: var(--text-color);
 }
 
-.table td {
-    vertical-align: middle;
+.table th {
+    color: var(--text-color);
     font-size: 14px;
+    white-space: nowrap;
+}
+
+.table td {
+    color: var(--text-color);
+    font-size: 14px;
+    vertical-align: middle;
 }
 
 .table-striped > tbody > tr:nth-of-type(odd) > * {
-    background-color: rgba(0,0,0,0.03);
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(255, 255, 255, 0.035);
 }
 
 .action-buttons {
@@ -292,22 +491,25 @@ input:-webkit-autofill:active {
     margin-bottom: 5px;
 }
 
-/* Badge */
+/* --- BADGE --- */
+
 .badge {
-    border-radius: 999px;
     padding: 7px 11px;
+    border-radius: 999px;
 }
 
-/* Alert */
+/* --- ALERT --- */
+
 .alert {
-    border-radius: 14px;
     border: none;
+    border-radius: 14px;
 }
 
-/* Pagination */
+/* --- PAGINATION --- */
+
 .pagination .page-link {
-    border-radius: 10px;
     margin: 0 3px;
+    border-radius: 10px;
     color: var(--primary-color);
 }
 
@@ -316,17 +518,19 @@ input:-webkit-autofill:active {
     border-color: var(--primary-color);
 }
 
-/* Chart */
+/* --- CHART --- */
+
 canvas {
     max-width: 100%;
 }
 
-/* Auth Page */
+/* --- AUTH PAGE --- */
+
 .auth-wrapper {
-    min-height: calc(100vh - 76px);
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: calc(100vh - 76px);
     padding: 40px 14px;
     background: linear-gradient(135deg, #3b6fe0 0%, #1e3a8a 100%);
 }
@@ -335,13 +539,13 @@ canvas {
     width: 100%;
     max-width: 440px;
     border-radius: 22px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
     background-color: #ffffff;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
 }
 
 .auth-title {
-    font-weight: 800;
     color: #111827;
+    font-weight: 800;
 }
 
 .auth-subtitle {
@@ -354,23 +558,29 @@ canvas {
 }
 
 .auth-card .form-control {
+    border: 1px solid #d1d5db;
     background-color: #ffffff;
     color: #1f2937;
-    border: 1px solid #d1d5db;
+}
+
+.auth-card .form-control::placeholder {
+    color: #6b7280;
 }
 
 .auth-card a {
     color: var(--primary-color);
 }
 
-/* Empty state */
+/* --- EMPTY STATE --- */
+
 .empty-state {
     padding: 22px;
-    text-align: center;
     color: var(--muted-color);
+    text-align: center;
 }
 
-/* Responsive */
+/* --- RESPONSIVE --- */
+
 @media (max-width: 768px) {
     .navbar .container {
         flex-direction: column;
@@ -385,8 +595,24 @@ canvas {
     }
 
     .navbar .btn {
-        font-size: 13px;
         padding: 6px 11px;
+        font-size: 13px;
+    }
+
+    .admin-navbar .container {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .admin-navbar .d-flex {
+        width: auto;
+        justify-content: flex-end;
+    }
+
+    .admin-navbar .navbar-brand {
+        font-size: 18px;
     }
 
     .page-title {
@@ -413,8 +639,28 @@ canvas {
 
 @media (max-width: 576px) {
     .container {
-        padding-left: 14px;
         padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .admin-navbar .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-navbar .navbar-brand {
+        width: 100%;
+        text-align: center;
+    }
+
+    .admin-navbar .d-flex {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .admin-navbar .btn {
+        flex: 1;
+        text-align: center;
     }
 
     .page-title {

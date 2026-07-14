@@ -1,23 +1,100 @@
 <?php
+
+/*
+|--------------------------------------------------------------------------
+| Penyimpanan terjemahan aktif
+|--------------------------------------------------------------------------
+*/
+
 $translations = [];
 
-function load_language($lang = 'id') {
-    global $translations;
-    $lang_file = __DIR__ . "/{$lang}.php";
+/*
+|--------------------------------------------------------------------------
+| Memuat file bahasa
+|--------------------------------------------------------------------------
+*/
 
-    if (file_exists($lang_file)) {
-        $translations = include $lang_file;
-    } else {
-        // Fallback ke Bahasa Inggris jika file terjemahan tidak ditemukan
-        $fallback_file = __DIR__ . "/en.php";
-        if(file_exists($fallback_file)) {
-            $translations = include $fallback_file;
+function load_language(string $language = 'id'): void
+{
+    global $translations;
+
+    $supportedLanguages = [
+        'id',
+        'en'
+    ];
+
+    if (!in_array($language, $supportedLanguages, true)) {
+        $language = 'id';
+    }
+
+    $languageFile = __DIR__ . '/' . $language . '.php';
+
+    if (is_file($languageFile)) {
+        $loadedTranslations = require $languageFile;
+
+        if (is_array($loadedTranslations)) {
+            $translations = $loadedTranslations;
+            return;
         }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fallback Bahasa Indonesia
+    |--------------------------------------------------------------------------
+    */
+
+    $fallbackFile = __DIR__ . '/id.php';
+
+    if (is_file($fallbackFile)) {
+        $fallbackTranslations = require $fallbackFile;
+
+        if (is_array($fallbackTranslations)) {
+            $translations = $fallbackTranslations;
+            return;
+        }
+    }
+
+    $translations = [];
 }
 
-function __($key, $default = null) {
+/*
+|--------------------------------------------------------------------------
+| Helper terjemahan
+|--------------------------------------------------------------------------
+|
+| Contoh:
+| __('income_data')
+|
+| Dengan parameter:
+| __('welcome_message', null, ['name' => 'Acenn'])
+|
+*/
+
+function __(
+    string $key,
+    ?string $default = null,
+    array $replacements = []
+): string {
     global $translations;
-    $default_value = $default ?? str_replace('_', ' ', ucfirst($key));
-    return $translations[$key] ?? $default_value;
+
+    $fallbackText = $default;
+
+    if ($fallbackText === null) {
+        $fallbackText = ucfirst(
+            str_replace('_', ' ', $key)
+        );
+    }
+
+    $text = $translations[$key] ?? $fallbackText;
+
+    foreach ($replacements as $placeholder => $value) {
+        $text = str_replace(
+            '{' . $placeholder . '}',
+            (string) $value,
+            $text
+        );
+    }
+
+    return $text;
 }

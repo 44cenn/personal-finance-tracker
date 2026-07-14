@@ -1,61 +1,156 @@
 <?php
-// 1. Mulai session jika belum ada
+
+/*
+|--------------------------------------------------------------------------
+| Session
+|--------------------------------------------------------------------------
+*/
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Cek otentikasi pengguna
-if (!isset($_SESSION['user_id'])) {
-    // Gunakan path absolut dari root web untuk pengalihan yang andal
-    header("Location: /personal-finance-tracker/auth/login.php?error=Anda harus login untuk mengakses halaman ini");
-    exit;
-}
+/*
+|--------------------------------------------------------------------------
+| File penting
+|--------------------------------------------------------------------------
+*/
 
-// Make user_id available globally for pages that include bootstrap.php
-$user_id = $_SESSION['user_id'];
-
-// 3. Sertakan file-file penting
 require_once __DIR__ . '/../middleware/role_check.php';
 require_once __DIR__ . '/database.php';
 
-// 4. Muat Helper (Adjusted path based on context)
 require_once __DIR__ . '/../user/format.php';
 require_once __DIR__ . '/../user/i18n.php';
 
-// 5. Muat pengaturan pengguna dari session
-// Pengaturan ini diatur saat login (process_login.php) dan saat diupdate (settings_update.php)
+/*
+|--------------------------------------------------------------------------
+| Pengaturan pengguna dari session
+|--------------------------------------------------------------------------
+*/
+
 $current_theme = $_SESSION['theme'] ?? 'default';
 $current_currency = $_SESSION['currency'] ?? 'IDR';
 $current_language = $_SESSION['language'] ?? 'id';
 
-// 6. Muat file bahasa yang sesuai dengan pilihan pengguna
-load_language($current_language);
+/*
+|--------------------------------------------------------------------------
+| Validasi nilai pengaturan
+|--------------------------------------------------------------------------
+*/
 
-// 7. Ambil data user yang sedang login untuk digunakan di banyak halaman
-$queryUserBootstrap = "SELECT * FROM users WHERE id = ?";
-$stmtUserBootstrap = mysqli_prepare($conn, $queryUserBootstrap);
+$allowedThemes = [
+    'default',
+    'dark'
+];
 
-// Pengecekan error dasar untuk mysqli_prepare
-if ($stmtUserBootstrap === false) {
-    // Kemungkinan besar masalah koneksi atau SQL.
-    die("Fatal Error: Gagal mempersiapkan statement database. Error: " . mysqli_error($conn));
+$allowedCurrencies = [
+    'IDR',
+    'USD',
+    'EUR',
+    'JPY',
+    'SGD',
+    'MYR'
+];
+
+$allowedLanguages = [
+    'id',
+    'en'
+];
+
+if (!in_array($current_theme, $allowedThemes, true)) {
+    $current_theme = 'default';
 }
 
-mysqli_stmt_bind_param($stmtUserBootstrap, "i", $_SESSION['user_id']);
+if (!in_array($current_currency, $allowedCurrencies, true)) {
+    $current_currency = 'IDR';
+}
+
+if (!in_array($current_language, $allowedLanguages, true)) {
+    $current_language = 'id';
+}
+
+/*
+|--------------------------------------------------------------------------
+| Muat file bahasa
+|--------------------------------------------------------------------------
+*/
+
+load_language($current_language);
+
+/*
+|--------------------------------------------------------------------------
+| Cek autentikasi
+|--------------------------------------------------------------------------
+*/
+
+if (!isset($_SESSION['user_id'])) {
+    $errorMessage = urlencode(__('login_required'));
+
+    header(
+        "Location: /personal-finance-tracker/auth/login.php?error={$errorMessage}"
+    );
+    exit;
+}
+
+$user_id = (int) $_SESSION['user_id'];
+
+/*
+|--------------------------------------------------------------------------
+| Ambil data user aktif
+|--------------------------------------------------------------------------
+*/
+
+$queryUserBootstrap = "
+    SELECT *
+    FROM users
+    WHERE id = ?
+    LIMIT 1
+";
+
+$stmtUserBootstrap = mysqli_prepare($conn, $queryUserBootstrap);
+
+if ($stmtUserBootstrap === false) {
+    die(
+        'Fatal Error: Gagal mempersiapkan statement database. Error: '
+        . mysqli_error($conn)
+    );
+}
+
+mysqli_stmt_bind_param(
+    $stmtUserBootstrap,
+    'i',
+    $user_id
+);
+
 mysqli_stmt_execute($stmtUserBootstrap);
 
-// Pengecekan penting: fungsi mysqli_stmt_get_result() memerlukan driver mysqlnd.
 if (!function_exists('mysqli_stmt_get_result')) {
-    die("Fatal Error: Fungsi mysqli_stmt_get_result() tidak ditemukan. Harap pastikan ekstensi PHP 'mysqlnd' telah terinstal dan aktif di file php.ini Anda.");
+    die(
+        "Fatal Error: Fungsi mysqli_stmt_get_result() tidak ditemukan. "
+        . "Pastikan ekstensi PHP mysqlnd telah aktif."
+    );
 }
 
 $resultUserBootstrap = mysqli_stmt_get_result($stmtUserBootstrap);
+
 $user = mysqli_fetch_assoc($resultUserBootstrap);
 
+mysqli_stmt_close($stmtUserBootstrap);
+
+/*
+|--------------------------------------------------------------------------
+| Validasi user
+|--------------------------------------------------------------------------
+*/
+
 if (!$user) {
-    // Jika user tidak ditemukan di database (misalnya sudah dihapus), hancurkan sesi dan paksa login ulang.
     session_unset();
     session_destroy();
-    header("Location: /personal-finance-tracker/auth/login.php?error=Sesi tidak valid, silakan login kembali.");
+
+    $errorMessage = urlencode(__('invalid_session'));
+
+    header(
+        "Location: /personal-finance-tracker/auth/login.php?error={$errorMessage}"
+    );
     exit;
 }

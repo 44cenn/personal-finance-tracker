@@ -1,108 +1,145 @@
 <?php
-require_once '../config/bootstrap.php';
+
+require_once __DIR__ . '/../config/bootstrap.php';
+
+/** @var mysqli $conn */
+/** @var int $user_id */
+/** @var string $current_theme */
+/** @var string $current_currency */
+/** @var string $current_language */
 
 checkRole('user');
 
 /*
-    Ambil data filter dari URL
+|--------------------------------------------------------------------------
+| Filter
+|--------------------------------------------------------------------------
 */
-$start_date = $_GET['start_date'] ?? '';
-$end_date = $_GET['end_date'] ?? '';
-$type = $_GET['type'] ?? '';
-$category_id = $_GET['category_id'] ?? '';
-$keyword = $_GET['keyword'] ?? '';
+
+$startDate = trim((string) ($_GET['start_date'] ?? ''));
+$endDate = trim((string) ($_GET['end_date'] ?? ''));
+$type = trim((string) ($_GET['type'] ?? ''));
+$categoryId = isset($_GET['category_id']) ? (int) $_GET['category_id'] : 0;
+$keyword = trim((string) ($_GET['keyword'] ?? ''));
+
+$allowedTypes = ['', 'income', 'expense'];
+
+if (!in_array($type, $allowedTypes, true)) {
+    $type = '';
+}
 
 /*
-    Pagination
+|--------------------------------------------------------------------------
+| Pagination
+|--------------------------------------------------------------------------
 */
-$limit = 5;
-$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 
-if ($page < 1) {
+$limit = 5;
+
+$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+
+if (!$page || $page < 1) {
     $page = 1;
 }
 
 $offset = ($page - 1) * $limit;
 
 /*
-    Ambil semua kategori untuk dropdown filter
+|--------------------------------------------------------------------------
+| Daftar kategori
+|--------------------------------------------------------------------------
 */
-$categoryQuery = "SELECT * FROM categories WHERE user_id IS NULL OR user_id = ? ORDER BY type ASC, name ASC";
+
+$categoryQuery = "
+    SELECT *
+    FROM categories
+    WHERE user_id IS NULL
+        OR user_id = ?
+    ORDER BY type ASC, name ASC
+";
+
 $categoryStmt = mysqli_prepare($conn, $categoryQuery);
-mysqli_stmt_bind_param($categoryStmt, "i", $user_id);
+
+if ($categoryStmt === false) {
+    die(htmlspecialchars(__('generic_error'), ENT_QUOTES, 'UTF-8'));
+}
+
+mysqli_stmt_bind_param($categoryStmt, 'i', $user_id);
 mysqli_stmt_execute($categoryStmt);
+
 $categoryResult = mysqli_stmt_get_result($categoryStmt);
 
 /*
-    Query dasar untuk filter
+|--------------------------------------------------------------------------
+| Query filter
+|--------------------------------------------------------------------------
 */
+
 $whereQuery = "
     FROM transactions
-    JOIN categories ON transactions.category_id = categories.id
+    INNER JOIN categories
+        ON transactions.category_id = categories.id
     WHERE transactions.user_id = ?
 ";
 
 $params = [$user_id];
-$types = "i";
+$types = 'i';
 
-/*
-    Filter tanggal awal
-*/
-if (!empty($start_date)) {
-    $whereQuery .= " AND transactions.transaction_date >= ?";
-    $params[] = $start_date;
-    $types .= "s";
+if ($startDate !== '') {
+    $whereQuery .= " AND transactions.transaction_date >= ? ";
+    $params[] = $startDate;
+    $types .= 's';
 }
 
-/*
-    Filter tanggal akhir
-*/
-if (!empty($end_date)) {
-    $whereQuery .= " AND transactions.transaction_date <= ?";
-    $params[] = $end_date;
-    $types .= "s";
+if ($endDate !== '') {
+    $whereQuery .= " AND transactions.transaction_date <= ? ";
+    $params[] = $endDate;
+    $types .= 's';
 }
 
-/*
-    Filter tipe income / expense
-*/
-if (!empty($type)) {
-    $whereQuery .= " AND transactions.type = ?";
+if ($type !== '') {
+    $whereQuery .= " AND transactions.type = ? ";
     $params[] = $type;
-    $types .= "s";
+    $types .= 's';
+}
+
+if ($categoryId > 0) {
+    $whereQuery .= " AND transactions.category_id = ? ";
+    $params[] = $categoryId;
+    $types .= 'i';
+}
+
+if ($keyword !== '') {
+    $whereQuery .= " AND transactions.description LIKE ? ";
+    $params[] = '%' . $keyword . '%';
+    $types .= 's';
 }
 
 /*
-    Filter kategori
+|--------------------------------------------------------------------------
+| Hitung jumlah data
+|--------------------------------------------------------------------------
 */
-if (!empty($category_id)) {
-    $whereQuery .= " AND transactions.category_id = ?";
-    $params[] = $category_id;
-    $types .= "i";
-}
 
-/*
-    Filter keyword berdasarkan keterangan
-*/
-if (!empty($keyword)) {
-    $whereQuery .= " AND transactions.description LIKE ?";
-    $params[] = "%" . $keyword . "%";
-    $types .= "s";
-}
-
-/*
-    Hitung total data setelah filter
-*/
-$countQuery = "SELECT COUNT(*) AS total_data " . $whereQuery;
+$countQuery = "
+    SELECT COUNT(*) AS total_data
+    {$whereQuery}
+";
 
 $countStmt = mysqli_prepare($conn, $countQuery);
+
+if ($countStmt === false) {
+    die(htmlspecialchars(__('generic_error'), ENT_QUOTES, 'UTF-8'));
+}
+
 mysqli_stmt_bind_param($countStmt, $types, ...$params);
 mysqli_stmt_execute($countStmt);
+
 $countResult = mysqli_stmt_get_result($countStmt);
 $countData = mysqli_fetch_assoc($countResult);
 
-$totalData = $countData['total_data'];
-$totalPages = ceil($totalData / $limit);
+$totalData = (int) ($countData['total_data'] ?? 0);
+$totalPages = (int) ceil($totalData / $limit);
 
 if ($totalPages < 1) {
     $totalPages = 1;
@@ -114,12 +151,19 @@ if ($page > $totalPages) {
 }
 
 /*
-    Query utama transaksi dengan LIMIT dan OFFSET
+|--------------------------------------------------------------------------
+| Ambil data transaksi
+|--------------------------------------------------------------------------
 */
+
 $query = "
-    SELECT transactions.*, categories.name AS category_name
-    " . $whereQuery . "
-    ORDER BY transactions.transaction_date DESC, transactions.id DESC
+    SELECT
+        transactions.*,
+        categories.name AS category_name
+    {$whereQuery}
+    ORDER BY
+        transactions.transaction_date DESC,
+        transactions.id DESC
     LIMIT ? OFFSET ?
 ";
 
@@ -128,125 +172,151 @@ $dataTypes = $types;
 
 $dataParams[] = $limit;
 $dataParams[] = $offset;
-$dataTypes .= "ii";
+$dataTypes .= 'ii';
 
 $stmt = mysqli_prepare($conn, $query);
+
+if ($stmt === false) {
+    die(htmlspecialchars(__('generic_error'), ENT_QUOTES, 'UTF-8'));
+}
+
 mysqli_stmt_bind_param($stmt, $dataTypes, ...$dataParams);
 mysqli_stmt_execute($stmt);
+
 $result = mysqli_stmt_get_result($stmt);
 
 /*
-    Buat query string agar filter tetap terbawa saat pindah halaman
+|--------------------------------------------------------------------------
+| Query string pagination
+|--------------------------------------------------------------------------
 */
+
 $queryString = http_build_query([
-    'start_date' => $start_date,
-    'end_date' => $end_date,
+    'start_date' => $startDate,
+    'end_date' => $endDate,
     'type' => $type,
-    'category_id' => $category_id,
-    'keyword' => $keyword
+    'category_id' => $categoryId > 0 ? $categoryId : '',
+    'keyword' => $keyword,
 ]);
 
 ?>
-
 <!DOCTYPE html>
-<html lang="<?= htmlspecialchars($current_language) ?>">
+<html lang="<?= htmlspecialchars($current_language, ENT_QUOTES, 'UTF-8') ?>">
 <head>
     <meta charset="UTF-8">
-    <title><?= __('history') ?> - Personal Finance Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= htmlspecialchars(__('transaction_history'), ENT_QUOTES, 'UTF-8') ?></title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
-<body data-theme="<?= htmlspecialchars($current_theme) ?>">
-<?php
-include __DIR__ . '/navbar.php';
-?>
+<body data-theme="<?= htmlspecialchars($current_theme, ENT_QUOTES, 'UTF-8') ?>">
+
+<?php require __DIR__ . '/navbar.php'; ?>
 
 <div class="container mt-4">
 
     <div class="d-flex align-items-center mb-3">
-        <a href="../index.php" class="btn btn-outline-secondary me-2 btn-back-icon" title="Kembali ke Home">‹</a>
-        <h3>Riwayat Transaksi</h3>
-    </div>
-    <p class="text-muted">Gunakan filter untuk mencari transaksi tertentu.</p>
+        <a href="../index.php" class="btn btn-outline-secondary me-2 btn-back-icon"
+           title="<?= htmlspecialchars(__('back_to_home'), ENT_QUOTES, 'UTF-8') ?>"
+           aria-label="<?= htmlspecialchars(__('back_to_home'), ENT_QUOTES, 'UTF-8') ?>">
+            ‹
+        </a>
 
-    <!-- Filter -->
+        <h3 class="mb-0"><?= htmlspecialchars(__('transaction_history'), ENT_QUOTES, 'UTF-8') ?></h3>
+    </div>
+
+    <p class="text-muted"><?= htmlspecialchars(__('transactions_subtitle'), ENT_QUOTES, 'UTF-8') ?></p>
+
     <div class="card shadow-sm mb-4">
+
         <div class="card-header bg-white">
-            <strong>Filter Transaksi</strong>
+            <strong><?= htmlspecialchars(__('filter_transactions'), ENT_QUOTES, 'UTF-8') ?></strong>
         </div>
 
         <div class="card-body">
+
             <form method="GET" action="transactions.php">
+
                 <div class="row">
 
                     <div class="col-md-3 mb-3">
-                        <label class="form-label">Tanggal Awal</label>
-                        <input type="date" name="start_date" class="form-control"
-                               value="<?= htmlspecialchars($start_date); ?>">
+                        <label for="start_date" class="form-label"><?= htmlspecialchars(__('start_date')) ?></label>
+                        <input id="start_date" type="date" name="start_date" class="form-control"
+                               value="<?= htmlspecialchars($startDate, ENT_QUOTES, 'UTF-8') ?>">
                     </div>
 
                     <div class="col-md-3 mb-3">
-                        <label class="form-label">Tanggal Akhir</label>
-                        <input type="date" name="end_date" class="form-control"
-                               value="<?= htmlspecialchars($end_date); ?>">
+                        <label for="end_date" class="form-label"><?= htmlspecialchars(__('end_date')) ?></label>
+                        <input id="end_date" type="date" name="end_date" class="form-control"
+                               value="<?= htmlspecialchars($endDate, ENT_QUOTES, 'UTF-8') ?>">
                     </div>
 
                     <div class="col-md-3 mb-3">
-                        <label class="form-label">Tipe</label>
-                        <select name="type" class="form-select">
-                            <option value="">Semua Tipe</option>
-                            <option value="income" <?= $type == 'income' ? 'selected' : ''; ?>>
-                                Pemasukan
+                        <label for="type" class="form-label"><?= htmlspecialchars(__('type')) ?></label>
+
+                        <select id="type" name="type" class="form-select">
+                            <option value=""><?= htmlspecialchars(__('all_types')) ?></option>
+                            <option value="income" <?= $type === 'income' ? 'selected' : '' ?>>
+                                <?= htmlspecialchars(__('income')) ?>
                             </option>
-                            <option value="expense" <?= $type == 'expense' ? 'selected' : ''; ?>>
-                                Pengeluaran
+                            <option value="expense" <?= $type === 'expense' ? 'selected' : '' ?>>
+                                <?= htmlspecialchars(__('expense')) ?>
                             </option>
                         </select>
                     </div>
 
                     <div class="col-md-3 mb-3">
-                        <label class="form-label">Kategori</label>
-                        <select name="category_id" class="form-select">
-                            <option value="">Semua Kategori</option>
+                        <label for="category_id" class="form-label"><?= htmlspecialchars(__('category')) ?></label>
+
+                        <select id="category_id" name="category_id" class="form-select">
+                            <option value=""><?= htmlspecialchars(__('all_categories')) ?></option>
 
                             <?php while ($category = mysqli_fetch_assoc($categoryResult)) : ?>
-                                <option value="<?= $category['id']; ?>"
-                                    <?= $category_id == $category['id'] ? 'selected' : ''; ?>>
-                                    <?= htmlspecialchars($category['name']); ?>
-                                    <?= $category['type'] == 'income' ? '(Pemasukan)' : '(Pengeluaran)'; ?>
+                                <option value="<?= (int) $category['id'] ?>"
+                                    <?= $categoryId === (int) $category['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars((string) $category['name'], ENT_QUOTES, 'UTF-8') ?>
+                                    <?= $category['type'] === 'income'
+                                        ? '(' . htmlspecialchars(__('income')) . ')'
+                                        : '(' . htmlspecialchars(__('expense')) . ')' ?>
                                 </option>
                             <?php endwhile; ?>
-
                         </select>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Cari Keterangan</label>
-                        <input type="text" name="keyword" class="form-control"
-                               placeholder="Contoh: makan, bensin, uang saku"
-                               value="<?= htmlspecialchars($keyword); ?>">
+                        <label for="keyword" class="form-label"><?= htmlspecialchars(__('search_description')) ?></label>
+                        <input id="keyword" type="text" name="keyword" class="form-control"
+                               placeholder="<?= htmlspecialchars(__('search_placeholder'), ENT_QUOTES, 'UTF-8') ?>"
+                               value="<?= htmlspecialchars($keyword, ENT_QUOTES, 'UTF-8') ?>">
                     </div>
 
                     <div class="col-md-6 mb-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary me-2">Filter</button>
-                        <a href="transactions.php" class="btn btn-secondary">Reset</a>
+                        <button type="submit" class="btn btn-primary me-2">
+                            <?= htmlspecialchars(__('filter_transactions')) ?>
+                        </button>
+
+                        <a href="transactions.php" class="btn btn-secondary">
+                            <?= htmlspecialchars(__('reset')) ?>
+                        </a>
                     </div>
 
                 </div>
+
             </form>
+
         </div>
+
     </div>
 
-    <!-- Tabel Transaksi -->
     <div class="card shadow-sm">
+
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <strong>Data Transaksi</strong>
+            <strong><?= htmlspecialchars(__('transaction_data')) ?></strong>
+
             <small class="text-muted">
-                Total data: <?= $totalData; ?>
+                <?= htmlspecialchars(__('total_data')) ?>: <?= $totalData ?>
             </small>
         </div>
 
@@ -256,85 +326,104 @@ include __DIR__ . '/navbar.php';
                 <table class="table table-bordered table-striped">
                     <thead class="table-primary">
                         <tr>
-                            <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Kategori</th>
-                            <th>Tipe</th>
-                            <th>Jumlah</th>
-                            <th>Keterangan</th>
+                            <th><?= htmlspecialchars(__('no')) ?></th>
+                            <th><?= htmlspecialchars(__('date')) ?></th>
+                            <th><?= htmlspecialchars(__('category')) ?></th>
+                            <th><?= htmlspecialchars(__('type')) ?></th>
+                            <th><?= htmlspecialchars(__('amount')) ?></th>
+                            <th><?= htmlspecialchars(__('description')) ?></th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <?php if (mysqli_num_rows($result) > 0) : ?>
-                            <?php $no = $offset + 1; ?>
-                            <?php while ($row = mysqli_fetch_assoc($result)) : ?>
-                                <tr>
-                                    <td><?= $no++; ?></td>
-                                    <td><?= htmlspecialchars($row['transaction_date']); ?></td>
-                                    <td><?= htmlspecialchars($row['category_name']); ?></td>
-                                    <td>
-                                        <?php if ($row['type'] == 'income') : ?>
-                                            <span class="badge bg-success">Pemasukan</span>
-                                        <?php else : ?>
-                                            <span class="badge bg-danger">Pengeluaran</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?= format_currency($row['amount'], $current_currency) ?>
-                                    </td>
-                                    <td><?= htmlspecialchars($row['description']); ?></td>
-                                </tr>
-                            <?php endwhile; ?>
-                        <?php else : ?>
+                    <?php if (mysqli_num_rows($result) > 0) : ?>
+                        <?php $number = $offset + 1; ?>
+                        <?php while ($row = mysqli_fetch_assoc($result)) : ?>
                             <tr>
-                                <td colspan="6" class="text-center">
-                                    Data transaksi tidak ditemukan.
+                                <td><?= $number++; ?></td>
+                                <td><?= htmlspecialchars((string) $row['transaction_date'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars((string) $row['category_name'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td>
+                                    <?php if ($row['type'] === 'income') : ?>
+                                        <span class="badge bg-success"><?= htmlspecialchars(__('income')) ?></span>
+                                    <?php else : ?>
+                                        <span class="badge bg-danger"><?= htmlspecialchars(__('expense')) ?></span>
+                                    <?php endif; ?>
                                 </td>
+                                <td><?= htmlspecialchars(format_currency($row['amount'], $current_currency), ENT_QUOTES, 'UTF-8') ?></td>
+                                <td><?= htmlspecialchars((string) ($row['description'] ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
                             </tr>
-                        <?php endif; ?>
+                        <?php endwhile; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <?= htmlspecialchars(__('no_transactions_found'), ENT_QUOTES, 'UTF-8') ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                     </tbody>
                 </table>
             </div>
 
-            <!-- Pagination -->
-            <nav class="mt-3">
+            <nav class="mt-3" aria-label="<?= htmlspecialchars(__('transaction_history'), ENT_QUOTES, 'UTF-8') ?>">
                 <ul class="pagination justify-content-center">
 
-                    <li class="page-item <?= $page <= 1 ? 'disabled' : ''; ?>">
-                        <a class="page-link" href="transactions.php?<?= $queryString; ?>&page=<?= $page - 1; ?>">
-                            Previous
+                    <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                        <a class="page-link"
+                           href="transactions.php?<?= htmlspecialchars($queryString, ENT_QUOTES, 'UTF-8') ?>&page=<?= max(1, $page - 1) ?>">
+                            <?= htmlspecialchars(__('previous')) ?>
                         </a>
                     </li>
 
                     <?php
-                        $pageWindow = 2;
-                        $startPage = max(1, $page - $pageWindow);
-                        $endPage = min($totalPages, $page + $pageWindow);
-
-                        if ($startPage > 1) {
-                            echo '<li class="page-item"><a class="page-link" href="transactions.php?'.$queryString.'&page=1">1</a></li>';
-                            if ($startPage > 2) {
-                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
-                            }
-                        }
-
-                        for ($i = $startPage; $i <= $endPage; $i++) {
-                            $activeClass = ($page == $i) ? 'active' : '';
-                            echo '<li class="page-item '.$activeClass.'"><a class="page-link" href="transactions.php?'.$queryString.'&page='.$i.'">'.$i.'</a></li>';
-                        }
-
-                        if ($endPage < $totalPages) {
-                            if ($endPage < $totalPages - 1) {
-                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
-                            }
-                            echo '<li class="page-item"><a class="page-link" href="transactions.php?'.$queryString.'&page='.$totalPages.'">'.$totalPages.'</a></li>';
-                        }
+                    $pageWindow = 2;
+                    $startPage = max(1, $page - $pageWindow);
+                    $endPage = min($totalPages, $page + $pageWindow);
                     ?>
 
-                    <li class="page-item <?= $page >= $totalPages ? 'disabled' : ''; ?>">
-                        <a class="page-link" href="transactions.php?<?= $queryString; ?>&page=<?= $page + 1; ?>">
-                            Next
+                    <?php if ($startPage > 1) : ?>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="transactions.php?<?= htmlspecialchars($queryString, ENT_QUOTES, 'UTF-8') ?>&page=1">
+                                1
+                            </a>
+                        </li>
+
+                        <?php if ($startPage > 2) : ?>
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php for ($i = $startPage; $i <= $endPage; $i++) : ?>
+                        <li class="page-item <?= $page === $i ? 'active' : '' ?>">
+                            <a class="page-link"
+                               href="transactions.php?<?= htmlspecialchars($queryString, ENT_QUOTES, 'UTF-8') ?>&page=<?= $i ?>">
+                                <?= $i ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($endPage < $totalPages) : ?>
+                        <?php if ($endPage < $totalPages - 1) : ?>
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        <?php endif; ?>
+
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="transactions.php?<?= htmlspecialchars($queryString, ENT_QUOTES, 'UTF-8') ?>&page=<?= $totalPages ?>">
+                                <?= $totalPages ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+                        <a class="page-link"
+                           href="transactions.php?<?= htmlspecialchars($queryString, ENT_QUOTES, 'UTF-8') ?>&page=<?= min($totalPages, $page + 1) ?>">
+                            <?= htmlspecialchars(__('next')) ?>
                         </a>
                     </li>
 
@@ -342,11 +431,17 @@ include __DIR__ . '/navbar.php';
             </nav>
 
         </div>
+
     </div>
 
 </div>
 
-<!-- Bootstrap JS -->
+<?php
+mysqli_stmt_close($categoryStmt);
+mysqli_stmt_close($countStmt);
+mysqli_stmt_close($stmt);
+?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
